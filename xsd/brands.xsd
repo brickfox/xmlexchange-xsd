@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="Manufacturers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Manufacturer"/>
+            </xs:sequence>
+            <xs:attribute name="count" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Manufacturer">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ManufacturerId"/>
+                <xs:element ref="Translations"/>
+            </xs:sequence>
+            <xs:attribute name="num" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ManufacturerId" type="xs:string"/>
+    <xs:element name="Translations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Translation"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Translation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Name"/>
+            </xs:sequence>
+            <xs:attribute name="lang" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Name" type="xs:string"/>
+</xs:schema>

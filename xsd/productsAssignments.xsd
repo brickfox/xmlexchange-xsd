@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="Products">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Product"/>
+            </xs:sequence>
+            <xs:attribute name="count" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Product">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ProductId"/>
+                <xs:element ref="Assignments"/>
+            </xs:sequence>
+            <xs:attribute name="num" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ProductId" type="xs:string"/>
+    <xs:element name="Assignments">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="Assignment"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Assignment">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ProductId"/>
+            </xs:sequence>
+            <xs:attribute name="sort" use="required" type="xs:integer"/>
+            <xs:attribute name="type" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

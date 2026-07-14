@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="baseProducts.xsd"/>
+
+    <!-- bundles elements -->
+    <xs:element name="Products">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="ProductBundle"/>
+            </xs:sequence>
+            <xs:attribute name="count" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ProductBundle">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="ProductExternId"/>
+                <xs:element ref="ItemNumber"/>
+                <xs:element ref="Descriptions"/>
+                <xs:element ref="Component"/>
+                <xs:element ref="Components"/>
+            </xs:choice>
+            <xs:attribute name="num" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ProductExternId" type="ItemString"/>
+    <xs:element name="Descriptions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Description" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Description">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Title"/>
+                <xs:element ref="TitleShort" minOccurs="0"/>
+                <xs:element ref="ShortDescription" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="lang" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Title" type="ItemString"/>
+    <xs:element name="TitleShort" type="ItemString"/>
+    <xs:element name="ShortDescription" type="ItemString"/>
+    <xs:element name="Component">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="ItemNumber"/>
+                <xs:element ref="Quantity"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Components">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="Component" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Quantity" type="ItemInteger"/>
+    <xs:element name="ItemNumber" type="ItemString"/>
+</xs:schema>

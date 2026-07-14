@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="baseProducts.xsd"/>
+
+    <!-- products elements -->
+    <xs:element name="Products">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="ProductDelete"/>
+            </xs:sequence>
+            <xs:attribute name="count" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ProductDelete">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="UID" minOccurs="0"/> <!-- only for exports, this field will be ignored on import -->
+                <xs:element ref="ProductExternId"/>
+            </xs:choice>
+            <xs:attribute name="id" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ProductExternId" type="xs:string"/>
+</xs:schema>

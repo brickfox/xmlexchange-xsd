@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <!-- products elements -->
+    <xs:element name="Products">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="ProductNotDelete"/>
+            </xs:sequence>
+            <xs:attribute name="count" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ProductNotDelete">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="ProductExternId"/>
+                <xs:element ref="ItemNumber" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="id" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ProductExternId" type="xs:string"/>
+    <xs:element name="ItemNumber" type="xs:string"/>
+</xs:schema>

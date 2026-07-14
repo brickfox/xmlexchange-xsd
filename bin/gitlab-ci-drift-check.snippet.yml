@@ -1,0 +1,18 @@
+# Optional warn-only drift check for the brickfox Core repository.
+#
+# Paste this job into core's CI (e.g. into CI/schedules/.daily-build-schedule.yml,
+# guarded like the other schedule jobs). It only WARNS — it never pushes and never
+# blocks a pipeline (allow_failure: true). It clones the public XSD repo and compares
+# it against the Core working tree, so drift between Core and the published schemas
+# becomes visible without introducing any deploy-time publishing.
+
+xsd_drift_check:
+  stage: test
+  image: registry.brickfox.net/docker/php-cli/multiarch:CI-7.4
+  script:
+    - git clone --depth 1 --branch stable https://github.com/brickfox/xmlexchange-xsd.git /tmp/xsd
+    - /tmp/xsd/bin/check-xsd-drift.sh "$CI_PROJECT_DIR"
+  allow_failure: true
+  only:
+    variables:
+      - $APP_BUILD == "false"

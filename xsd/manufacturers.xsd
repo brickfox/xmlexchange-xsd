@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="Manufacturers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Manufacturer"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Manufacturer">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ID"/>
+                <xs:element ref="Number"/>
+                <xs:element ref="Type" minOccurs="0"/>
+                <xs:element ref="Name"/>
+                <xs:element ref="Street"/>
+                <xs:element ref="ZipCode"/>
+                <xs:element ref="City"/>
+                <xs:element ref="Country"/>
+                <xs:element ref="Phone"/>
+                <xs:element ref="Fax"/>
+                <xs:element ref="Email"/>
+                <xs:element ref="Url"/>
+                <xs:element ref="Image"/>
+                <xs:element ref="EuEstablished"/>
+                <xs:element name="ResponsiblePerson">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="Name"/>
+                            <xs:element ref="Street"/>
+                            <xs:element ref="ZipCode"/>
+                            <xs:element ref="City"/>
+                            <xs:element ref="Country"/>
+                            <xs:element ref="Phone"/>
+                            <xs:element ref="Fax"/>
+                            <xs:element ref="Email"/>
+                            <xs:element ref="Url"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ID" type="xs:string"/>
+    <xs:element name="Number" type="xs:integer"/>
+    <xs:element name="Type" type="xs:string"/>
+    <xs:element name="Name" type="xs:string"/>
+    <xs:element name="Street" type="xs:string"/>
+    <xs:element name="ZipCode" type="xs:string"/>
+    <xs:element name="City" type="xs:string"/>
+    <xs:element name="Country" type="xs:string"/>
+    <xs:element name="Phone" type="xs:string"/>
+    <xs:element name="Fax" type="xs:string"/>
+    <xs:element name="Email" type="xs:string"/>
+    <xs:element name="Url" type="xs:string"/>
+    <xs:element name="Image" type="xs:string"/>
+    <xs:element name="EuEstablished" type="xs:boolean"/>
+</xs:schema>

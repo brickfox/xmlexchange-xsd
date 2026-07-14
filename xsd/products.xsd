@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="baseProducts.xsd"/>
+
+    <!-- products elements -->
+    <xs:element name="Products">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Product"/>
+            </xs:sequence>
+            <xs:attribute name="count" type="xs:integer"/>
+            <xs:attribute name="VariationIdentifier" type="xs:string"/> <!-- will be ignored on import, just for export -->
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Product">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="UID" minOccurs="0"/>
+                <!-- only for exports, this field will be ignored on import -->
+                <xs:element ref="ProductExternId"/>
+                <xs:element ref="ItemNumber"/>
+                <xs:element ref="Active"/>
+                <xs:element ref="TaxClass"/>
+                <xs:element ref="TaxRate" minOccurs="0"/>
+                <xs:element ref="ShippingMethod" minOccurs="0"/>
+                <xs:element ref="Manufacturer" minOccurs="0"/>
+                <xs:element ref="ManufacturerId" minOccurs="0"/>
+                <xs:element ref="ExternManufacturerId" minOccurs="0"/>
+                <xs:element ref="ManufacturerInfo" minOccurs="0"/>
+                <xs:element ref="Condition" minOccurs="0"/>
+                <xs:element ref="CountryOfOrigin" minOccurs="0"/>
+                <xs:element ref="Attributes" minOccurs="0"/>
+                <xs:element ref="ServiceOptions" minOccurs="0"/>
+                <xs:element ref="Categories"/>
+                <xs:element name="Descriptions" type="ProductsDescriptions"/>
+                <xs:element name="Images" type="Images" minOccurs="0"/>
+                <xs:element name="Media" type="Media" minOccurs="0"/>
+                <xs:element ref="Variations"/>
+            </xs:choice>
+            <xs:attribute name="id" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ProductExternId" type="ItemString"/>
+    <xs:element name="Active" type="ItemInteger"/>
+    <xs:element name="TaxClass" type="ItemString"/>
+    <xs:element name="TaxRate" type="ItemString"/>
+    <xs:element name="ShippingMethod" type="ItemString"/>
+    <xs:element name="Manufacturer" type="ItemString"/>
+    <xs:element name="ManufacturerId" type="ItemInteger"/>
+    <xs:element name="ExternManufacturerId" type="ItemString"/>
+    <xs:element name="ManufacturerInfo">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ID" type="xs:string"/>
+                <xs:element name="Number">
+                    <xs:simpleType>
+                        <xs:union>
+                            <xs:simpleType>
+                                <xs:restriction base='xs:string'>
+                                    <xs:length value="0"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                            <xs:simpleType>
+                                <xs:restriction base='xs:integer' />
+                            </xs:simpleType>
+                        </xs:union>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Condition" type="ItemString"/>
+    <xs:element name="CountryOfOrigin" type="ItemString"/>
+    <xs:element name="ServiceOptions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ServiceOption" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ServiceOption">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Translations"/>
+                <xs:element ref="ServiceOptionValues"/>
+            </xs:choice>
+            <xs:attribute name="externId" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ServiceOptionValues">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ServiceOptionValue" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ServiceOptionValue">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Translations"/>
+                <xs:element ref="Currencies"/>
+            </xs:choice>
+            <xs:attribute name="default" type="xs:integer"/>
+            <xs:attribute name="externId" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Categories">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Category" maxOccurs="unbounded"/>
+                <xs:element ref="CategoriesPath" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CategoriesPath">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Path" type="ItemString" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="lang" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Category">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="UID" minOccurs="0"/>
+                <!-- only for exports, this field will be ignored on import -->
+                <xs:element ref="ExternCategoryId" minOccurs="0"/>
+                <xs:element ref="CategoryPath" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="main" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ExternCategoryId" type="ItemString"/>
+    <xs:element name="CategoryPath" type="ItemString"/>
+    <xs:complexType name="ProductsDescriptions">
+        <xs:sequence>
+            <xs:element name="Description" type="ProductDescription" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+    </xs:complexType>
+    <xs:complexType name="ProductDescription">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element ref="Title"/>
+            <xs:element ref="TitleShort" minOccurs="0"/>
+            <xs:element ref="ShortDescription" minOccurs="0"/>
+            <xs:element ref="LongDescription" minOccurs="0"/>
+            <xs:element ref="SearchKeys" minOccurs="0"/>
+            <xs:element ref="SeoTitle" minOccurs="0"/>
+            <xs:element ref="SeoDescription" minOccurs="0"/>
+            <xs:element ref="SeoContent" minOccurs="0"/>
+            <xs:element ref="ProductUrl" minOccurs="0"/>
+            <xs:element ref="BulletPoints" minOccurs="0"/>
+        </xs:choice>
+        <xs:attribute name="lang" use="required" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="VariationDescriptions">
+        <xs:sequence>
+            <xs:element name="Description" type="VariationDescription" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+    </xs:complexType>
+    <xs:complexType name="VariationDescription">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element ref="ContentUnit" minOccurs="0"/>
+            <xs:element ref="BasePriceQuantity" minOccurs="0"/>
+            <xs:element ref="BasePriceUnit" minOccurs="0"/>
+            <xs:element ref="PriceUnit" minOccurs="0"/>
+            <xs:element ref="Title" minOccurs="0"/>
+            <xs:element ref="TitleShort" minOccurs="0"/>
+            <xs:element ref="ShortDescription" minOccurs="0"/>
+            <xs:element ref="LongDescription" minOccurs="0"/>
+            <xs:element ref="PackingUnit" minOccurs="0"/>
+            <xs:element ref="BulletPoints" minOccurs="0"/>
+            <xs:element ref="ProductUrl" minOccurs="0"/>
+            <xs:element ref="OrderUnit" minOccurs="0"/>
+        </xs:choice>
+        <xs:attribute name="lang" use="required" type="xs:string"/>
+    </xs:complexType>
+    <xs:element name="Title" type="ItemString"/>
+    <xs:element name="TitleShort" type="ItemString"/>
+    <xs:element name="ContentUnit" type="ItemString"/>
+    <xs:element name="BasePriceQuantity" type="ItemString"/>
+    <xs:element name="BasePriceUnit" type="ItemString"/>
+    <xs:element name="PriceUnit" type="ItemString"/>
+    <xs:element name="ShortDescription" type="ItemString"/>
+    <xs:element name="LongDescription" type="ItemString"/>
+    <xs:element name="SearchKeys" type="ItemString"/>
+    <xs:element name="SeoTitle" type="ItemString"/>
+    <xs:element name="SeoDescription" type="ItemString"/>
+    <xs:element name="SeoContent" type="ItemString"/>
+    <xs:element name="ProductUrl" type="ItemString"/>
+    <xs:element name="PackingUnit" type="ItemString"/>
+    <xs:element name="OrderQuantity" type="ItemString"/>
+    <xs:element name="OrderUnit" type="ItemString"/>
+    <xs:complexType name="Images">
+        <xs:sequence>
+            <xs:element ref="Image" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+    </xs:complexType>
+    <xs:element name="Image">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Path"/>
+                <xs:element ref="Name" minOccurs="0"/>
+                <xs:element ref="ImageAttributes" minOccurs="0"/>
+                <xs:element ref="ImageDescriptions" minOccurs="0"/>
+                <xs:element name="AltText" type="xs:string"/>
+            </xs:choice>
+            <xs:attribute name="sort" use="required" type="xs:integer"/>
+            <xs:attribute name="changed" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ImageAttributes">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="ImageAttribute" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ImageDescriptions">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="ImageDescription" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ImageAttribute">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Name"/>
+            </xs:choice>
+            <xs:attribute name="code" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ImageDescription">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="AltText"/>
+            </xs:choice>
+            <xs:attribute name="lang" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="Media">
+        <xs:sequence>
+            <xs:element ref="MediaEntry" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+    </xs:complexType>
+    <xs:element name="MediaEntry">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Path"/>
+                <xs:element ref="Type" minOccurs="0"/>
+                <xs:element ref="Name" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="sort" use="required" type="xs:integer"/>
+            <xs:attribute name="changed" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Path" type="ItemString"/>
+    <xs:element name="Variations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Variation" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Variation">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="UID" minOccurs="0"/>
+                <!-- only for exports, this field will be ignored on import -->
+                <xs:element ref="VariationExternId"/>
+                <xs:element name="Weight" type="PackageUnit" minOccurs="0"/>
+                <xs:element name="Width" type="PackageUnit" minOccurs="0"/>
+                <xs:element name="Height" type="PackageUnit" minOccurs="0"/>
+                <xs:element name="Length" type="PackageUnit" minOccurs="0"/>
+                <xs:element ref="VariationItemNumber" minOccurs="0"/>
+                <xs:element ref="ManufacturerItemNumber" minOccurs="0"/>
+                <xs:element ref="MinimumOrderQuantity" minOccurs="0"/>
+                <xs:element ref="MaximumOrderQuantity" minOccurs="0"/>
+                <xs:element ref="DefaultQuantity" minOccurs="0"/>
+                <xs:element ref="EAN" minOccurs="0"/>
+                <xs:element ref="ISBN" minOccurs="0"/>
+                <xs:element ref="VariationActive"/>
+                <!-- only for exports, this field will be ignored on import -->
+                <xs:element ref="VariationDeleted" minOccurs="0"/>
+                <xs:element ref="Available"/>
+                <xs:element ref="ThirdPartyStockEnabled" minOccurs="0"/>
+                <!-- deprecated - please use element ThirdPartyStock instead -->
+                <xs:element ref="ThirdPartyStock" minOccurs="0"/>
+                <xs:element ref="DeliveryTimes" minOccurs="0"/>
+                <xs:element ref="DeliveryTime" minOccurs="0"/>
+                <xs:element ref="Stock" minOccurs="0"/>
+                <xs:element ref="Stocks" minOccurs="0"/>
+                <xs:element ref="NeverOutOfStock" minOccurs="0"/>
+                <xs:element ref="NeverOutOfStocks" minOccurs="0"/>
+                <xs:element ref="UnitQuantity" minOccurs="0"/>
+                <xs:element ref="UnitName" minOccurs="0"/>
+                <xs:element ref="ContentQuantity" minOccurs="0"/>
+                <xs:element ref="PriceQuantity" minOccurs="0"/>
+                <xs:element ref="OrderQuantity" minOccurs="0"/>
+                <xs:element name="Descriptions" type="VariationDescriptions" minOccurs="0"/>
+                <xs:element ref="Currencies"/>
+                <xs:element ref="Suppliers"/>
+                <xs:element ref="PrimeCost" minOccurs="0"/>
+                <xs:element ref="CustomsTariffNumber" minOccurs="0"/>
+                <xs:element ref="EprelRegistrationNumber" minOccurs="0"/>
+                <xs:element ref="IsBasePriceRequired" minOccurs="0"/>
+                <xs:element ref="Options" minOccurs="0"/>
+                <xs:element ref="Attributes" minOccurs="0"/>
+                <xs:element name="VariationImages" type="Images" minOccurs="0"/>
+                <xs:element name="VariationMedia" type="Media" minOccurs="0"/>
+                <xs:element ref="Package" minOccurs="0"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="VariationExternId" type="ItemString"/>
+    <xs:element name="VariationItemNumber" type="ItemString"/>
+    <xs:element name="ManufacturerItemNumber" type="ItemString"/>
+    <xs:element name="EAN" type="ItemString"/>
+    <xs:element name="ISBN" type="ItemString"/>
+    <xs:element name="MinimumOrderQuantity" type="ItemIntegerOrEmpty"/>
+    <xs:element name="MaximumOrderQuantity" type="ItemIntegerOrEmpty"/>
+    <xs:element name="DefaultQuantity" type="ItemIntegerOrEmpty"/>
+    <xs:element name="VariationActive" type="ItemInteger"/>
+    <xs:element name="VariationDeleted" type="xs:integer"/>
+    <xs:element name="Available" type="ItemInteger"/>
+    <xs:element name="ThirdPartyStockEnabled" type="ItemIntegerOrEmpty"/>
+    <xs:element name="ThirdPartyStock" type="ItemIntegerOrEmpty"/>
+    <xs:element name="DeliveryTime" type="ItemString"/>
+    <xs:element name="Stock">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="ItemInteger">
+                    <xs:attribute name="location" type="xs:string"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Stocks">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Stock" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="NeverOutOfStock">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="ItemInteger">
+                    <xs:attribute name="location" type="xs:string"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="NeverOutOfStocks">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="NeverOutOfStock" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="UnitQuantity" type="ItemInteger"/>
+    <xs:element name="UnitName" type="ItemString"/>
+    <xs:element name="DeliveryTimes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="DeliveryTime" type="ItemString"/>
+            </xs:sequence>
+            <xs:attribute name="lang" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Suppliers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Supplier" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Supplier">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="PrimeCost" minOccurs="0"/>
+                <xs:element ref="ProductName" minOccurs="0"/>
+                <xs:element ref="ItemNumber" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="externId" type="xs:string"/>
+            <xs:attribute name="main" type="xs:integer"/>
+            <xs:attribute name="name" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CustomsTariffNumber" type="ItemString"/>
+    <xs:element name="EprelRegistrationNumber" type="ItemString"/>
+    <xs:element name="IsBasePriceRequired" type="xs:integer"/>
+    <xs:element name="ProductName" type="ItemString"/>
+    <xs:element name="Options">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Option" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Option">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Translations" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ItemNumber" type="ItemString"/>
+    <xs:element name="Attributes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="String"/>
+                    <xs:element ref="Integer"/>
+                    <xs:element ref="Float"/>
+                    <xs:element ref="Boolean"/>
+                    <xs:element ref="Text"/>
+                    <xs:element ref="DateTime"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="String">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Translations"/>
+            </xs:sequence>
+            <xs:attribute name="code" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Integer">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Value"/>
+                <xs:element ref="Translations"/>
+            </xs:choice>
+            <xs:attribute name="code" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Float">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Value"/>
+                <xs:element ref="Translations"/>
+            </xs:choice>
+            <xs:attribute name="code" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Boolean">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Value"/>
+                <xs:element ref="Translations"/>
+            </xs:choice>
+            <xs:attribute name="code" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DateTime">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Value"/>
+                <xs:element ref="Translations"/>
+            </xs:choice>
+            <xs:attribute name="code" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Text">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Translations"/>
+            </xs:sequence>
+            <xs:attribute name="code" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Translations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Translation" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Translation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Name" minOccurs="0"/>
+                <xs:choice minOccurs="0">
+                    <xs:element ref="Value"/>
+                    <xs:element ref="Unit"/>
+                    <xs:sequence>
+                        <xs:element ref="OptionName"/>
+                        <xs:element ref="OptionValue" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="lang" use="required" type="xs:string"/>
+            <xs:attribute name="name"/>
+            <xs:attribute name="value"/>
+            <xs:attribute name="code" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Unit" type="ItemString"/>
+    <xs:element name="OptionName" type="ItemString"/>
+    <xs:element name="OptionValue" type="ItemString"/>
+    <xs:element name="Currencies">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Currency" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="net" type="xs:boolean"/>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Currency">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element ref="Price"/>
+                    <xs:element ref="Rrp" minOccurs="0"/>
+                    <xs:element ref="PriceQuantity" minOccurs="0"/>
+                    <xs:element ref="ScalePrices" minOccurs="0"/>
+                    <xs:element ref="SpecialPrice" minOccurs="0"/>
+                    <xs:element ref="SpecialPriceStart" minOccurs="0"/>
+                    <xs:element ref="ContentQuantity" minOccurs="0"/>
+                    <xs:element ref="SpecialPriceEnd" minOccurs="0"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="code" use="required" type="xs:string"/>
+            <xs:attribute name="net" type="xs:boolean"/>
+            <xs:attribute name="price" type="xs:decimal"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Package">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="Weight" type="PackageUnit" minOccurs="0"/>
+                <xs:element name="Width" type="PackageUnit" minOccurs="0"/>
+                <xs:element name="Height" type="PackageUnit" minOccurs="0"/>
+                <xs:element name="Length" type="PackageUnit" minOccurs="0"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="PackageUnit">
+        <xs:simpleContent>
+            <xs:extension base="ItemDecimal">
+                <xs:attribute name="unit" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:element name="ScalePrices">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ScalePrice" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ScalePrice">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="Price" minOccurs="0"/>
+                <xs:element ref="Quantity" minOccurs="0"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Quantity" type="ItemInteger"/>
+    <xs:element name="Price" type="ItemDecimal"/>
+    <xs:element name="Rrp" type="ItemDecimalOrEmpty"/>
+    <xs:element name="PriceQuantity" type="ItemInteger"/>
+    <xs:element name="SpecialPrice" type="ItemDecimal"/>
+    <xs:element name="SpecialPriceStart" type="ItemDateTime"/>
+    <xs:element name="SpecialPriceEnd" type="ItemDateTime"/>
+    <xs:element name="Name" type="ItemString"/>
+    <xs:element name="AltText" type="ItemString"/>
+    <xs:element name="Type" type="ItemString"/>
+    <xs:element name="Value" type="ItemString"/>
+    <xs:element name="ContentQuantity" type="ItemDecimal"/>
+    <xs:element name="BulletPoints">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Bullet" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Bullet">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="ItemString">
+                    <xs:attribute name="sort" use="required" type="xs:string"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

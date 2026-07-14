@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="Orders">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Order"/>
+            </xs:sequence>
+            <xs:attribute name="count" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Order">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="OrderId"/>
+                <xs:element ref="OrderStatusChanged"/>
+                <xs:element ref="OrderStatus"/>
+                <xs:element ref="OrderAddInfos" minOccurs="0"/>
+                <xs:element ref="OrderStatusComment" minOccurs="0"/>
+                <xs:sequence minOccurs="0">
+                    <xs:element ref="ShippingTrackingId"/>
+                    <xs:element ref="ShippingTrackingUrl" minOccurs="0"/>
+                    <xs:element minOccurs="0" ref="ReturnTrackingId"/>
+                    <xs:element ref="CarrierName"/>
+                </xs:sequence>
+                <xs:element ref="OrderLines"/>
+                <xs:element ref="OrderFiles" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="num" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderId" type="xs:string"/>
+    <xs:element name="OrderStatusChanged" type="xs:string"/>
+    <xs:element name="OrderStatus" type="xs:string"/>
+    <xs:element name="OrderStatusComment" type="xs:string"/>
+    <xs:element name="ShippingTrackingId" type="xs:string"/>
+    <xs:element name="ShippingTrackingUrl" type="xs:anyURI"/>
+    <xs:element name="CarrierName" type="xs:string"/>
+    <xs:element name="ReturnTrackingId" type="xs:string"/>
+    <xs:element name="OrderAddInfos">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderAddInfo"/>
+            </xs:sequence>
+            <xs:attribute name="count" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderAddInfo">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Key" type="xs:string"/>
+                <xs:element name="Value" type="xs:string"/>
+            </xs:sequence>
+            <xs:attribute name="num" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderLines">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderLine"/>
+            </xs:sequence>
+            <xs:attribute name="count" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderLine">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="OrderLineId" minOccurs="0"/>
+                <xs:element ref="ProductId" minOccurs="0"/>
+                <xs:element ref="VariationId" minOccurs="0"/>
+                <xs:element ref="OrderLineStatus"/>
+                <xs:element ref="QuantityOrdered"/>
+                <xs:element ref="QuantityCancelled"/>
+                <xs:element ref="QuantityShipped"/>
+                <xs:element ref="QuantityReturned"/>
+                <xs:element ref="OrderShipments" minOccurs="0"/>
+                <xs:element ref="OrderLineAddInfos" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="num" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderLineAddInfos">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderLineAddInfo"/>
+            </xs:sequence>
+            <xs:attribute name="count" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderLineAddInfo">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Key" type="xs:string"/>
+                <xs:element name="Value" type="xs:string"/>
+            </xs:sequence>
+            <xs:attribute name="num" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderFiles">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderFile"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderFile">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Type" type="xs:string"/>
+                <xs:element name="Value" type="xs:string"/>
+                <xs:element name="InvoiceNumber" type="xs:string" minOccurs="0"/>
+                <xs:element name="ShippingTrackingIds" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ShippingTrackingId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderLineId" type="xs:string"/>
+    <xs:element name="ProductId" type="xs:string"/>
+    <xs:element name="VariationId" type="xs:string"/>
+    <xs:element name="OrderLineStatus" type="xs:string"/>
+    <xs:element name="QuantityOrdered" type="xs:integer"/>
+    <xs:element name="QuantityCancelled" type="xs:integer"/>
+    <xs:element name="QuantityShipped" type="xs:integer"/>
+    <xs:element name="QuantityReturned" type="xs:integer"/>
+    <xs:element name="OrderShipments">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderShipment"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="OrderShipment">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ShippingTrackingId"/>
+                <xs:element ref="CarrierName"/>
+                <xs:element ref="QuantityShipped"/>
+                <xs:element minOccurs="0" ref="ReturnTrackingId"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

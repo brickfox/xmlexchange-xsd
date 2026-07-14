@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="Categories">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Category"/>
+            </xs:sequence>
+            <xs:attribute name="count" use="required" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Category">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="UID" minOccurs="0"/> <!-- only for exports, this field will be ignored on import -->
+                <xs:element ref="CategoryId"/>
+                <xs:element ref="ParentUID" minOccurs="0"/> <!-- only for exports, this field will be ignored on import -->
+                <xs:element ref="ParentId"/>
+                <xs:element ref="SortOrder" minOccurs="0"/>
+                <xs:element ref="Translations"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:integer"/>
+            <xs:attribute name="num" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="UID" type="xs:integer"/>
+    <xs:element name="ParentUID" type="integerOrEmpty"/>
+    <xs:element name="CategoryId" type="xs:string"/>
+    <xs:element name="ParentId" type="xs:string"/>
+    <xs:element name="SortOrder" type="integerOrEmpty"/>
+    <xs:element name="Translations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Translation"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Translation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Name"/>
+                <xs:element ref="Description" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="lang" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Name" type="xs:string"/>
+    <xs:element name="Description" type="xs:string"/>
+    <xs:simpleType name="integerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>The number-or-normal values can be either a positive integer or an empty string. This is
+                used for the content of the ensemble element.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:union memberTypes="xs:integer">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value=""/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+</xs:schema>

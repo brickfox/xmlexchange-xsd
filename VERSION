@@ -1,0 +1,5 @@
+source-repo:   git.brickfox.net/brickfox/core
+source-path:    BFcore/brick/modules/XmlExchange/xsd/
+source-commit:  9f29eed5e1
+source-date:    2026-07-10
+initial-import: UCHBF-1944
