@@ -17,6 +17,7 @@
                 <xs:element ref="Street"/>
                 <xs:element ref="ZipCode"/>
                 <xs:element ref="City"/>
+                <xs:element ref="State" minOccurs="0"/>
                 <xs:element ref="Country"/>
                 <xs:element ref="Phone"/>
                 <xs:element ref="Fax"/>
@@ -31,6 +32,7 @@
                             <xs:element ref="Street"/>
                             <xs:element ref="ZipCode"/>
                             <xs:element ref="City"/>
+                            <xs:element ref="State" minOccurs="0"/>
                             <xs:element ref="Country"/>
                             <xs:element ref="Phone"/>
                             <xs:element ref="Fax"/>
@@ -49,6 +51,7 @@
     <xs:element name="Street" type="xs:string"/>
     <xs:element name="ZipCode" type="xs:string"/>
     <xs:element name="City" type="xs:string"/>
+    <xs:element name="State" type="xs:string"/>
     <xs:element name="Country" type="xs:string"/>
     <xs:element name="Phone" type="xs:string"/>
     <xs:element name="Fax" type="xs:string"/>

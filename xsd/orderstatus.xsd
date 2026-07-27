@@ -21,6 +21,7 @@
                     <xs:element ref="ShippingTrackingUrl" minOccurs="0"/>
                     <xs:element minOccurs="0" ref="ReturnTrackingId"/>
                     <xs:element ref="CarrierName"/>
+                    <xs:element minOccurs="0" ref="DeliveryBillId"/>
                 </xs:sequence>
                 <xs:element ref="OrderLines"/>
                 <xs:element ref="OrderFiles" minOccurs="0"/>
@@ -36,6 +37,7 @@
     <xs:element name="ShippingTrackingUrl" type="xs:anyURI"/>
     <xs:element name="CarrierName" type="xs:string"/>
     <xs:element name="ReturnTrackingId" type="xs:string"/>
+    <xs:element name="DeliveryBillId" type="xs:string"/>
     <xs:element name="OrderAddInfos">
         <xs:complexType>
             <xs:sequence>
@@ -140,6 +142,7 @@
                 <xs:element ref="CarrierName"/>
                 <xs:element ref="QuantityShipped"/>
                 <xs:element minOccurs="0" ref="ReturnTrackingId"/>
+                <xs:element minOccurs="0" ref="DeliveryBillId"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
