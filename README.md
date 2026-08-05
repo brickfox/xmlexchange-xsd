@@ -84,3 +84,9 @@ deployment pipeline; it is updated deliberately. When a schema changes in Core:
 
 A read-only drift check is provided in [`bin/check-xsd-drift.sh`](bin/check-xsd-drift.sh)
 to compare this repository against a Core checkout.
+
+## License
+
+These schemas are published under the [MIT License](LICENSE), Copyright (c) 2011-2026
+brickfox GmbH. You may copy, embed and redistribute them — including in commercial
+products — as long as the copyright and license notice is retained.
