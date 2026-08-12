@@ -6,8 +6,10 @@ exchanged between an ERP system and the brickfox platform (product, order,
 category and related data).
 
 This repository is the **single source of truth** for the XmlExchange schemas.
-Do not embed copies of these XSDs elsewhere — reference this repository instead so
-you always validate against the current, published version.
+Do not keep hand-maintained copies elsewhere — mirror this repository instead, so you
+always validate against the published version. A local fallback copy is fine and in fact
+recommended (see [Consuming the schemas](#consuming-the-schemas)); a copy that is only
+ever updated by hand is what goes stale.
 
 ## Channels (versioning)
 
@@ -24,9 +26,25 @@ Raw URL pattern:
 https://raw.githubusercontent.com/brickfox/xmlexchange-xsd/stable/xsd/<schema>.xsd
 ```
 
-> **Availability tip:** fetch and **cache** the schemas at build/deploy time and keep a
-> local fallback copy. Do not fetch them per request at runtime — your interfaces must
-> not fail if GitHub is temporarily unreachable.
+## Consuming the schemas
+
+Your interfaces must not fail when GitHub is temporarily unreachable. The pattern we use
+in our own services:
+
+1. **Mirror, don't fetch per request.** Copy the set you need into a local directory and
+   refresh it on a schedule — once a day is plenty, the schemas change rarely.
+2. **Keep serving the last mirror** when the fetch fails, and log it. An outage must not
+   turn into a failed import.
+3. **Ship a bootstrap copy** for the very first start of a fresh deployment, so a cold
+   mirror plus an outage cannot leave you without a schema at all.
+4. **Validate against one complete set.** Never mix files from different snapshots:
+   `baseProducts.xsd` is included by relative path, so a mismatched pair silently
+   validates against the wrong types. Writing each refresh into its own directory and
+   switching over only once it is complete is a simple way to guarantee this.
+5. **Pin to `stable`**, not to `latest` or `main`.
+
+A build- or deploy-time fetch instead of a scheduled refresh is equally fine — the point
+is that no single request depends on GitHub being reachable.
 
 ## Schemas
 
@@ -71,16 +89,21 @@ otherwise the include cannot be resolved.
 Interface documentation lives in Confluence:
 **"Import von Produkten via XmlExchange"** — page id `625639426`.
 
-## Updating these schemas
+## How these schemas get here
 
-The schemas originate from the brickfox Core
-(`BFcore/brick/modules/XmlExchange/xsd/`). This repository is **not** auto-synced from a
-deployment pipeline; it is updated deliberately. When a schema changes in Core:
+The schemas originate from the brickfox Core (`BFcore/brick/modules/XmlExchange/xsd/`)
+and are published from its deployment pipeline:
 
-1. Copy the changed file(s) into `xsd/`.
-2. Update [`VERSION`](VERSION) with the originating Core commit/date.
-3. Add a `CHANGELOG.md` entry.
-4. Commit to `latest`; promote to `stable` once validated with integrators.
+1. A **master deploy** copies the curated schema set into `xsd/` on the `latest` branch and
+   rewrites [`VERSION`](VERSION) with the originating Core commit and publish timestamp.
+   The step is idempotent — it only commits when a published schema actually changed.
+2. `stable` is updated **only** by a separate, manually triggered promote step, which
+   fast-forwards `latest` onto `stable`. That gate is why a schema change never reaches
+   pinned consumers unannounced.
+
+So `stable` can lag `latest` by design: a change sits on `latest` until it is deliberately
+released. [`VERSION`](VERSION) on each branch tells you which Core commit that branch
+reflects.
 
 A read-only drift check is provided in [`bin/check-xsd-drift.sh`](bin/check-xsd-drift.sh)
 to compare this repository against a Core checkout.
