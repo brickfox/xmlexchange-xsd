@@ -211,6 +211,12 @@
                 <xs:element ref="ImageAttributes" minOccurs="0"/>
                 <xs:element ref="ImageDescriptions" minOccurs="0"/>
                 <xs:element name="AltText" type="xs:string"/>
+                <!-- Dedizierte KI-Kennzeichnung des Bildes; dünner Alias auf das
+                     Bildattribut mit Code "AIGenerated". truthy (1/true/yes/ja) =
+                     KI-generiert, sonst (0/false/no/nein/leer) = Kennzeichnung
+                     entfernen. Optional und abwärtskompatibel: der bestehende Weg
+                     über <ImageAttribute code="AIGenerated"> bleibt unverändert. -->
+                <xs:element name="AiGenerated" type="xs:string" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="sort" use="required" type="xs:integer"/>
             <xs:attribute name="changed" type="xs:integer"/>
