@@ -1,24 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xs:element name="Manufacturers">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Marken.
+
+                ACHTUNG: Trotz des Elementnamens beschreibt diese Datei die MARKEN, nicht die
+                Hersteller. Die Herstellerangaben nach GPSR werden über manufacturers.xsd
+                (ManufacturersInfo.xml) übergeben.
+
+                Beispiel:
+                &lt;Manufacturers count="2"&gt;
+                  &lt;Manufacturer num="1"&gt;
+                    &lt;ManufacturerId&gt;110&lt;/ManufacturerId&gt;
+                    &lt;Translations&gt;
+                      &lt;Translation lang="de"&gt;
+                        &lt;Name&gt;Adidas&lt;/Name&gt;
+                      &lt;/Translation&gt;
+                    &lt;/Translations&gt;
+                  &lt;/Manufacturer&gt;
+                &lt;/Manufacturers&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="Manufacturer"/>
             </xs:sequence>
-            <xs:attribute name="count" use="required" type="xs:integer"/>
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Manufacturer">
+        <xs:annotation>
+            <xs:documentation>
+                Einzelne Marke mit Übersetzungen.
+                Das num Attribut dient der eindeutigen Nummerierung im XML.
+
+                Beispiel:
+                &lt;Manufacturer num="2"&gt;
+                  &lt;ManufacturerId&gt;220&lt;/ManufacturerId&gt;
+                  &lt;Translations&gt;
+                    &lt;Translation lang="de"&gt;
+                      &lt;Name&gt;Puma&lt;/Name&gt;
+                    &lt;/Translation&gt;
+                  &lt;/Translations&gt;
+                &lt;/Manufacturer&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="ManufacturerId"/>
                 <xs:element ref="Translations"/>
             </xs:sequence>
-            <xs:attribute name="num" use="required" type="xs:integer"/>
+            <xs:attribute name="num" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ManufacturerId" type="xs:string"/>
+    <xs:element name="ManufacturerId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutige ID der Marke.
+                Wird zur Referenzierung in Produktdaten verwendet.
+
+                Beispiele:
+                - &lt;ManufacturerId&gt;110&lt;/ManufacturerId&gt;
+                - &lt;ManufacturerId&gt;220&lt;/ManufacturerId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Translations">
+        <xs:annotation>
+            <xs:documentation>
+                Übersetzungen des Markennamens.
+                Ermöglicht mehrsprachige Markennamen.
+
+                Beispiel:
+                &lt;Translations&gt;
+                  &lt;Translation lang="de"&gt;
+                    &lt;Name&gt;Adidas&lt;/Name&gt;
+                  &lt;/Translation&gt;
+                  &lt;Translation lang="en"&gt;
+                    &lt;Name&gt;Adidas&lt;/Name&gt;
+                  &lt;/Translation&gt;
+                &lt;/Translations&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="Translation"/>
@@ -26,12 +105,35 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Translation">
+        <xs:annotation>
+            <xs:documentation>
+                Übersetzung der Marke für eine Sprache.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Name"/>
             </xs:sequence>
-            <xs:attribute name="lang" use="required" type="xs:string"/>
+            <xs:attribute name="lang" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                        angelegt sind, werden übersprungen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Name" type="xs:string"/>
+    <xs:element name="Name" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Name der Marke in der jeweiligen Sprache.
+                Sollte der offizielle Markenname sein.
+
+                Beispiele:
+                - &lt;Name&gt;Adidas&lt;/Name&gt;
+                - &lt;Name&gt;Puma&lt;/Name&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
 </xs:schema>

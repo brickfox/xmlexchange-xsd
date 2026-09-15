@@ -5,21 +5,68 @@
 
     <!-- products elements -->
     <xs:element name="Products">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Produkte, die gelöscht werden sollen.
+                Das count Attribut gibt die Anzahl der enthaltenen Produkte an.
+
+                Achtung: Das Löschen ist permanent und kann nicht rückgängig gemacht werden.
+                Verwenden Sie articleNotDelete.xsd, um bestimmte Produkte vom Löschen auszuschließen.
+
+                Beispiel:
+                &lt;Products count="2"&gt;
+                  &lt;ProductDelete&gt;...&lt;/ProductDelete&gt;
+                  &lt;ProductDelete&gt;...&lt;/ProductDelete&gt;
+                &lt;/Products&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="ProductDelete"/>
             </xs:sequence>
-            <xs:attribute name="count" use="required" type="xs:integer"/>
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="ProductDelete">
+        <xs:annotation>
+            <xs:documentation>
+                Produkt, das gelöscht werden soll. Identifizierung über ProductExternId.
+
+                Beispiel:
+                &lt;ProductDelete&gt;
+                  &lt;ProductExternId&gt;7254356456&lt;/ProductExternId&gt;
+                &lt;/ProductDelete&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="UID" minOccurs="0"/> <!-- only for exports, this field will be ignored on import -->
                 <xs:element ref="ProductExternId"/>
             </xs:choice>
-            <xs:attribute name="id" type="xs:integer"/>
+            <xs:attribute name="id" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Beim Import wird sie nicht
+                        ausgewertet, sie dient nur der Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ProductExternId" type="xs:string"/>
+    <xs:element name="ProductExternId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Parent Artikel zwischen ERP/PIM und brickfox.
+
+                Beispiel: &lt;ProductExternId&gt;7254356456&lt;/ProductExternId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
 </xs:schema>

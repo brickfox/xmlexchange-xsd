@@ -2,20 +2,93 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
     <xs:element name="ShopProductsUpdate">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Shop-Produktaktualisierungen.
+                Ermöglicht das Aktualisieren von Produktdaten in Marktplätzen/Shops.
+
+                Das count Attribut gibt die Anzahl der zu aktualisierenden Produkte an.
+
+                Beispiel:
+                &lt;ShopProductsUpdate count="1"&gt;
+                  &lt;ShopProductUpdate&gt;
+                    &lt;shopProductId&gt;12345&lt;/shopProductId&gt;
+                    &lt;updateFields&gt;...&lt;/updateFields&gt;
+                  &lt;/ShopProductUpdate&gt;
+                &lt;/ShopProductsUpdate&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="ShopProductUpdate" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Aktualisierung eines einzelnen Artikels in einem Shop oder Marktplatz.
+
+                            Beispiel:
+                            &lt;ShopProductUpdate&gt;
+                              &lt;shopProductId&gt;12345&lt;/shopProductId&gt;
+                              &lt;updateFields&gt;
+                                &lt;updateField&gt;
+                                  &lt;key&gt;title&lt;/key&gt;
+                                  &lt;value&gt;Neuer Produkttitel&lt;/value&gt;
+                                &lt;/updateField&gt;
+                              &lt;/updateFields&gt;
+                            &lt;/ShopProductUpdate&gt;
+                        </xs:documentation>
+                    </xs:annotation>
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="shopProductId" type="xs:string"/>
+                            <xs:element name="shopProductId" type="xs:string">
+                                <xs:annotation>
+                                    <xs:documentation>
+                                        ID des Artikels im Shop oder Marktplatz, dessen Felder aktualisiert werden.
+                                    </xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
                             <xs:element name="updateFields" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>
+                                        Liste der zu aktualisierenden Felder. Nur die hier enthaltenen Felder werden
+                                        geändert, alle übrigen bleiben unverändert.
+
+                                        Beispiel:
+                                        &lt;updateFields&gt;
+                                          &lt;updateField&gt;
+                                            &lt;key&gt;price&lt;/key&gt;
+                                            &lt;value&gt;29.99&lt;/value&gt;
+                                          &lt;/updateField&gt;
+                                          &lt;updateField&gt;
+                                            &lt;key&gt;stock&lt;/key&gt;
+                                            &lt;value&gt;100&lt;/value&gt;
+                                          &lt;/updateField&gt;
+                                        &lt;/updateFields&gt;
+                                    </xs:documentation>
+                                </xs:annotation>
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="updateField" maxOccurs="unbounded">
+                                            <xs:annotation>
+                                                <xs:documentation>
+                                                    Ein zu aktualisierendes Feld als Schlüssel-Wert-Paar.
+                                                </xs:documentation>
+                                            </xs:annotation>
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                    <xs:element name="key" type="xs:string"/>
-                                                    <xs:element name="value" type="xs:string"/>
+                                                    <xs:element name="key" type="xs:string">
+                                                        <xs:annotation>
+                                                            <xs:documentation>
+                                                                Name des zu aktualisierenden Felds.
+                                                            </xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
+                                                    <xs:element name="value" type="xs:string">
+                                                        <xs:annotation>
+                                                            <xs:documentation>
+                                                                Neuer Wert des Felds.
+                                                            </xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
@@ -23,20 +96,85 @@
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="ShopProductVariations" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>
+                                        Aktualisierungen für die Varianten des Artikels. Ermöglicht es,
+                                        Variantenfelder getrennt vom Parent zu aktualisieren.
+
+                                        Beispiel:
+                                        &lt;ShopProductVariations&gt;
+                                          &lt;ShopProductVariation&gt;
+                                            &lt;shopProductVariationId&gt;789&lt;/shopProductVariationId&gt;
+                                            &lt;updateFields&gt;
+                                              &lt;updateField&gt;
+                                                &lt;key&gt;size&lt;/key&gt;
+                                                &lt;value&gt;XL&lt;/value&gt;
+                                              &lt;/updateField&gt;
+                                            &lt;/updateFields&gt;
+                                          &lt;/ShopProductVariation&gt;
+                                        &lt;/ShopProductVariations&gt;
+                                    </xs:documentation>
+                                </xs:annotation>
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="ShopProductVariation" maxOccurs="unbounded">
+                                            <xs:annotation>
+                                                <xs:documentation>
+                                                    Aktualisierung einer einzelnen Variante.
+                                                </xs:documentation>
+                                            </xs:annotation>
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                    <xs:element name="shopProductVariationId" type="xs:string"/>
+                                                    <xs:element name="shopProductVariationId" type="xs:string">
+                                                        <xs:annotation>
+                                                            <xs:documentation>
+                                                                ID der Variante im Shop oder Marktplatz, deren Felder aktualisiert werden.
+                                                            </xs:documentation>
+                                                        </xs:annotation>
+                                                    </xs:element>
                                                     <xs:element name="updateFields">
+                                                        <xs:annotation>
+                                                            <xs:documentation>
+                                                                Liste der zu aktualisierenden Felder. Nur die hier enthaltenen Felder werden
+                                                                geändert, alle übrigen bleiben unverändert.
+
+                                                                Beispiel:
+                                                                &lt;updateFields&gt;
+                                                                  &lt;updateField&gt;
+                                                                    &lt;key&gt;price&lt;/key&gt;
+                                                                    &lt;value&gt;29.99&lt;/value&gt;
+                                                                  &lt;/updateField&gt;
+                                                                  &lt;updateField&gt;
+                                                                    &lt;key&gt;stock&lt;/key&gt;
+                                                                    &lt;value&gt;100&lt;/value&gt;
+                                                                  &lt;/updateField&gt;
+                                                                &lt;/updateFields&gt;
+                                                            </xs:documentation>
+                                                        </xs:annotation>
                                                         <xs:complexType>
                                                             <xs:sequence>
                                                                 <xs:element name="updateField" maxOccurs="unbounded">
+                                                                    <xs:annotation>
+                                                                        <xs:documentation>
+                                                                            Ein zu aktualisierendes Feld als Schlüssel-Wert-Paar.
+                                                                        </xs:documentation>
+                                                                    </xs:annotation>
                                                                     <xs:complexType>
                                                                         <xs:sequence>
-                                                                            <xs:element name="key" type="xs:string"/>
-                                                                            <xs:element name="value" type="xs:string"/>
+                                                                            <xs:element name="key" type="xs:string">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>
+                                                                                        Name des zu aktualisierenden Felds.
+                                                                                    </xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
+                                                                            <xs:element name="value" type="xs:string">
+                                                                                <xs:annotation>
+                                                                                    <xs:documentation>
+                                                                                        Neuer Wert des Felds.
+                                                                                    </xs:documentation>
+                                                                                </xs:annotation>
+                                                                            </xs:element>
                                                                         </xs:sequence>
                                                                     </xs:complexType>
                                                                 </xs:element>
@@ -53,7 +191,14 @@
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
-            <xs:attribute name="count" type="xs:integer" use="required"/>
+            <xs:attribute name="count" type="xs:integer" use="required">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
 

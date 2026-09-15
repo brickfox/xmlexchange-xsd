@@ -2,22 +2,76 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <!-- products elements -->
     <xs:element name="Products">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für die Liste der Artikel, die erhalten bleiben sollen.
+
+                Die Datei beschreibt den zu behaltenden Bestand, nicht die zu löschenden Artikel: Alle
+                Artikel des Mandanten, die hier NICHT aufgeführt sind, werden nach dem Import als
+                gelöscht markiert. Eine unvollständige Datei löscht damit produktiven Bestand.
+
+                Beispiel:
+                &lt;Products count="2"&gt;
+                  &lt;ProductNotDelete id="1"&gt;
+                    &lt;ProductExternId&gt;7254356456&lt;/ProductExternId&gt;
+                  &lt;/ProductNotDelete&gt;
+                  &lt;ProductNotDelete id="2"&gt;
+                    &lt;ProductExternId&gt;7254356457&lt;/ProductExternId&gt;
+                  &lt;/ProductNotDelete&gt;
+                &lt;/Products&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="ProductNotDelete"/>
             </xs:sequence>
-            <xs:attribute name="count" type="xs:integer"/>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="ProductNotDelete">
+        <xs:annotation>
+            <xs:documentation>
+                Ein Artikel, der erhalten bleiben soll. Die Zuordnung erfolgt über
+                ProductExternId.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="ProductExternId"/>
                 <xs:element ref="ItemNumber" minOccurs="0"/>
             </xs:choice>
-            <xs:attribute name="id" type="xs:integer"/>
+            <xs:attribute name="id" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Beim Import wird sie nicht
+                        ausgewertet, sie dient nur der Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ProductExternId" type="xs:string"/>
-    <xs:element name="ItemNumber" type="xs:string"/>
+    <xs:element name="ProductExternId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Parent Artikel zwischen ERP/PIM und brickfox.
+
+                Beispiel: &lt;ProductExternId&gt;7254356456&lt;/ProductExternId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ItemNumber" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Artikelnummer des Parent Artikels. Wird beim Import nicht ausgewertet; die
+                Zuordnung erfolgt ausschließlich über ProductExternId.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
 </xs:schema>

@@ -1,14 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xs:element name="Orders">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Bestellungen.
+                Das count Attribut gibt die Anzahl der enthaltenen Bestellungen an.
+
+                Beispiel:
+                &lt;Orders count="1"&gt;
+                  &lt;Order num="1"&gt;...&lt;/Order&gt;
+                &lt;/Orders&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Order" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="count" type="xs:integer"/>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Order">
+        <xs:annotation>
+            <xs:documentation>
+                Einzelne Bestellung.
+
+                Beispiel:
+                &lt;Order num="1"&gt;
+                  &lt;OrderId&gt;1&lt;/OrderId&gt;
+                  &lt;OrderDate&gt;2023-04-01&lt;/OrderDate&gt;
+                  &lt;OrderStatus&gt;completed&lt;/OrderStatus&gt;
+                  &lt;PaymentStatus&gt;paid&lt;/PaymentStatus&gt;
+                  &lt;CustomerId&gt;1&lt;/CustomerId&gt;
+                  &lt;IsoCurrencyCode&gt;EUR&lt;/IsoCurrencyCode&gt;
+                  &lt;TotalAmountProducts&gt;45.90&lt;/TotalAmountProducts&gt;
+                  &lt;TotalAmountProductsNetto&gt;38.57&lt;/TotalAmountProductsNetto&gt;
+                  &lt;TotalAmountVat&gt;7.33&lt;/TotalAmountVat&gt;
+                  &lt;ShippingCost&gt;5.00&lt;/ShippingCost&gt;
+                  &lt;PaymentCost&gt;0.00&lt;/PaymentCost&gt;
+                  &lt;TotalAmount&gt;45.90&lt;/TotalAmount&gt;
+                  &lt;Comment&gt;Bestellung erfolgreich abgeschlossen&lt;/Comment&gt;
+                  &lt;InternalRemark&gt;&lt;/InternalRemark&gt;
+                  &lt;CostsChangings&gt;
+                    &lt;CostsChanging&gt;
+                      &lt;TypeValue&gt;5.50000000&lt;/TypeValue&gt;
+                      &lt;Value&gt;10.78000000&lt;/Value&gt;
+                      &lt;Name&gt;&lt;/Name&gt;
+                    &lt;/CostsChanging&gt;
+                  &lt;/CostsChangings&gt;
+                  &lt;PaymentMethod&gt;creditcard&lt;/PaymentMethod&gt;
+                  &lt;PaymentMethodValues&gt;
+                    &lt;cardAuthorization&gt;96897GJHGJH6896789IUI97897ZUIZUI&lt;/cardAuthorization&gt;
+                    &lt;shortId&gt;3152.2746.4745&lt;/shortId&gt;
+                    &lt;transactionId&gt;76ghs676sdfhus878sfh897szuzu&lt;/transactionId&gt;
+                  &lt;/PaymentMethodValues&gt;
+                  &lt;ShippingMethod&gt;standard&lt;/ShippingMethod&gt;
+                  &lt;LanguageCode&gt;de&lt;/LanguageCode&gt;
+                  &lt;OrderAddInfos count="1"&gt;
+                    &lt;OrderAddInfo num="1"&gt;
+                      &lt;Key&gt;Marktplatz- oder Shopkey&lt;/Key&gt;
+                      &lt;Value&gt;XYZ&lt;/Value&gt;
+                    &lt;/OrderAddInfo&gt;
+                  &lt;/OrderAddInfos&gt;
+                  &lt;BillingParty&gt;
+                    &lt;AcademicTitle&gt;Dr.&lt;/AcademicTitle&gt;
+                    &lt;Company&gt;Musterfirma&lt;/Company&gt;
+                    &lt;CompanyAdd&gt;Musterstraße 1&lt;/CompanyAdd&gt;
+                    &lt;VatId&gt;DE123456789&lt;/VatId&gt;
+                    &lt;FirstName&gt;Max&lt;/FirstName&gt;
+                    &lt;LastName&gt;Muster&lt;/LastName&gt;
+                    &lt;Address&gt;Musterstraße 1&lt;/Address&gt;
+                    &lt;Number&gt;1&lt;/Number&gt;
+                    &lt;AddressAdd&gt;&lt;/AddressAdd&gt;
+                    &lt;PostalCode&gt;12345&lt;/PostalCode&gt;
+                    &lt;City&gt;Musterstadt&lt;/City&gt;
+                    &lt;Country&gt;Deutschland&lt;/Country&gt;
+                    &lt;State&gt;Bayern&lt;/State&gt;
+                    &lt;PhonePrivate&gt;+49 1234 567890&lt;/PhonePrivate&gt;
+                    &lt;PhoneMobile&gt;+49 1234 567890&lt;/PhoneMobile&gt;
+                    &lt;Title&gt;Dr.&lt;/Title&gt;
+                    &lt;EmailAddress&gt;max.muster@example.com&lt;/EmailAddress&gt;
+                    &lt;DateOfBirth&gt;1970-01-01&lt;/DateOfBirth&gt;
+                  &lt;/BillingParty&gt;
+                  &lt;DeliveryParty&gt;
+                    &lt;AcademicTitle&gt;Dr.&lt;/AcademicTitle&gt;
+                    &lt;Company&gt;Musterfirma&lt;/Company&gt;
+                    &lt;CompanyAdd&gt;Musterstraße 1&lt;/CompanyAdd&gt;
+                    &lt;VatId&gt;DE123456789&lt;/VatId&gt;
+                    &lt;FirstName&gt;Max&lt;/FirstName&gt;
+                    &lt;LastName&gt;Muster&lt;/LastName&gt;
+                    &lt;Address&gt;Musterstraße 1&lt;/Address&gt;
+                    &lt;Number&gt;1&lt;/Number&gt;
+                    &lt;AddressAdd&gt;&lt;/AddressAdd&gt;
+                    &lt;PostalCode&gt;12345&lt;/PostalCode&gt;
+                    &lt;City&gt;Musterstadt&lt;/City&gt;
+                    &lt;Country&gt;Deutschland&lt;/Country&gt;
+                    &lt;State&gt;Bayern&lt;/State&gt;
+                    &lt;PhonePrivate&gt;+49 1234 567890&lt;/PhonePrivate&gt;
+                    &lt;PhoneMobile&gt;+49 1234 567890&lt;/PhoneMobile&gt;
+                    &lt;Title&gt;Dr.&lt;/Title&gt;
+                    &lt;EmailAddress&gt;max.muster@example.com&lt;/EmailAddress&gt;
+                    &lt;DateOfBirth&gt;1970-01-01&lt;/DateOfBirth&gt;
+                  &lt;/DeliveryParty&gt;
+                  &lt;Coupons count="1"&gt;
+                    &lt;Coupon&gt;
+                      &lt;Id&gt;1&lt;/Id&gt;
+                      &lt;ExternId&gt;BF_COUPON&lt;/ExternId&gt;
+                      &lt;Code&gt;BF_COUPON&lt;/Code&gt;
+                      &lt;Type&gt;discount&lt;/Type&gt;
+                      &lt;ReduceType&gt;percentage&lt;/ReduceType&gt;
+                      &lt;Rebate&gt;25.00&lt;/Rebate&gt;
+                      &lt;Title&gt;25% Rabatt&lt;/Title&gt;
+                      &lt;CalculatedRebate&gt;25.00&lt;/CalculatedRebate&gt;
+                      &lt;Group&gt;
+                        &lt;Id&gt;1&lt;/Id&gt;
+                        &lt;ExternId&gt;BF_COUPON&lt;/ExternId&gt;
+                        &lt;Title&gt;Rabatt Gutschein&lt;/Title&gt;
+                      &lt;/Group&gt;
+                      &lt;OrderLineReferences&gt;
+                        &lt;OrderLineReference&gt;
+                          &lt;OrderLineId&gt;87338&lt;/OrderLineId&gt;
+                          &lt;CalculatedRebate&gt;25.00&lt;/CalculatedRebate&gt;
+                        &lt;/OrderLineReference&gt;
+                      &lt;/OrderLineReferences&gt;
+                    &lt;/Coupon&gt;
+                  &lt;/Coupons&gt;
+                  &lt;OrderLines count="2"&gt;
+                    &lt;OrderLine num="1"&gt;
+                      &lt;OrderLineId&gt;4448&lt;/OrderLineId&gt;
+                      &lt;ExternProductId&gt;500166&lt;/ExternProductId&gt;
+                      &lt;ProductName&gt;Rugby-Shirt Farbe grau, Größe M&lt;/ProductName&gt;
+                      &lt;ItemNumber&gt;1497349-M&lt;/ItemNumber&gt;
+                      &lt;EAN&gt;7391531298695&lt;/EAN&gt;
+                      &lt;QuantityOrdered&gt;1&lt;/QuantityOrdered&gt;
+                      &lt;ProductsPriceTotal&gt;45.90&lt;/ProductsPriceTotal&gt;
+                      &lt;ProductsPriceTotalNetto&gt;38.57&lt;/ProductsPriceTotalNetto&gt;
+                      &lt;VatPriceTotal&gt;7.33&lt;/VatPriceTotal&gt;
+                      &lt;TaxRate&gt;19.00&lt;/TaxRate&gt;
+                    &lt;/OrderLine&gt;
+                    &lt;OrderLine num="2"&gt;
+                      &lt;OrderLineId&gt;87338&lt;/OrderLineId&gt;
+                      &lt;IsCoupon&gt;1&lt;/IsCoupon&gt;
+                      &lt;ProductName&gt;Gutschein&lt;/ProductName&gt;
+                      &lt;ItemNumber&gt;BF_COUPON&lt;/ItemNumber&gt;
+                      &lt;ProductsPriceTotal&gt;-25.00&lt;/ProductsPriceTotal&gt;
+                      &lt;TaxRate&gt;0.00&lt;/TaxRate&gt;
+                    &lt;/OrderLine&gt;
+                  &lt;/OrderLines&gt;
+                &lt;/Order&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="OrderId"/>
@@ -37,25 +184,149 @@
                 <xs:element ref="Coupons" minOccurs="0"/>
                 <xs:element ref="OrderLines"/>
             </xs:choice>
-            <xs:attribute name="num" type="xs:integer"/>
+            <xs:attribute name="num" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="OrderId" type="xs:string"/>
-    <xs:element name="OrderDate" type="xs:string"/>
-    <xs:element name="OrderStatus" type="xs:string"/>
-    <xs:element name="PaymentStatus" type="xs:string"/>
-    <xs:element name="CustomerId" type="xs:string"/>
-    <xs:element name="IsoCurrencyCode" type="xs:string"/>
-    <xs:element name="CurrencyName" type="xs:string"/>
-    <xs:element name="TotalAmountProducts" type="decimal-or-empty"/>
-    <xs:element name="TotalAmountProductsNetto" type="decimal-or-empty"/>
-    <xs:element name="TotalAmountVat" type="decimal-or-empty"/>
-    <xs:element name="ShippingCost" type="xs:decimal"/>
-    <xs:element name="PaymentCost" type="decimal-or-empty"/>
-    <xs:element name="TotalAmount" type="xs:decimal"/>
-    <xs:element name="Comment" type="xs:string"/>
-    <xs:element name="InternalRemark" type="xs:string"/>
+    <xs:element name="OrderId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Bestellungen zwischen Marktplatz/Shop und brickfox.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderDate" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Bestelldatum aus dem Marktplatz/Shop.
+
+                Beispiel: &lt;OrderDate&gt;2022-01-03 00:00:00&lt;/OrderDate&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderStatus" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Status der Bestellung. Der übergebene Wert wird über das Statusmatching des Kanals
+                auf einen brickfox-Status aufgelöst, die zulässigen Werte sind daher
+                konfigurationsabhängig.
+
+                Gängige brickfox-Statuscodes sind Pending, Shipped, PartlyShipped, Returned,
+                PartlyReturned und Cancelled.
+
+                Beispiel:
+                &lt;OrderStatus&gt;Shipped&lt;/OrderStatus&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PaymentStatus" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Status der Zahlung.
+
+                Beispiel: &lt;PaymentStatus&gt;Paid&lt;/PaymentStatus&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="CustomerId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Kundennummer aus dem Marktplatz/Shop.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="IsoCurrencyCode" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                ISO-Code der genutzten Währung.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="CurrencyName" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Klartextname der Währung der Bestellung, z.B. Euro. Ergänzt IsoCurrencyCode.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="TotalAmountProducts" type="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Gesamter Warenwert der bestellten Artikel.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="TotalAmountProductsNetto" type="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Gesamter Netto-Warenwert der bestellten Artikel.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="TotalAmountVat" type="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Gesamter Steuerwert der bestellten Artikel.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ShippingCost" type="xs:decimal">
+        <xs:annotation>
+            <xs:documentation>
+                Gesamte Versandkosten der Bestellung.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PaymentCost" type="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Zahlartkosten der Bestellung, z.B. der Nachnahmeaufschlag.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="TotalAmount" type="xs:decimal">
+        <xs:annotation>
+            <xs:documentation>
+                Gesamte Kosten der Bestellung.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Comment" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Optionales Kommentar aus dem Marktplatz/Shop.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="InternalRemark" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Optionale interne Bemerkung aus dem Marktplatz/Shop.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="CostsChangings">
+        <xs:annotation>
+            <xs:documentation>
+                Preisänderungen für die Bestellung, z.B. Warenkorb-Rabatte.
+
+                Beispiel:
+                &lt;CostsChangings&gt;
+                  &lt;CostsChanging&gt;
+                    &lt;TypeValue&gt;5.50000000&lt;/TypeValue&gt;
+                    &lt;Value&gt;10.78000000&lt;/Value&gt;
+                    &lt;Name&gt;&lt;/Name&gt;
+                  &lt;/CostsChanging&gt;
+                &lt;/CostsChangings&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="CostsChanging" maxOccurs="unbounded"/>
@@ -63,23 +334,88 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="CostsChanging">
+        <xs:annotation>
+            <xs:documentation>
+                Eine einzelne Kostenänderung der Bestellung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
-                <xs:element name="Type" type="CostsChangingType"/>
+                <xs:element name="Type" type="CostsChangingType">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Art der Kostenänderung als Ganzzahl.
+
+                            Mögliche Werte:
+                            - 0 (absoluter Wert)
+                            - 1 (relativer Wert)
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element ref="TypeValue"/>
                 <xs:element ref="Value"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
-    <xs:element name="TypeValue" type="xs:decimal"/>
+    <xs:element name="TypeValue" type="xs:decimal">
+        <xs:annotation>
+            <xs:documentation>
+                Bezugswert der Kostenänderung. Bei einer relativen Änderung der Prozentsatz, bei
+                einer absoluten Änderung der zugrunde liegende Betrag.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:simpleType name="CostsChangingType">
+        <xs:annotation>
+            <xs:documentation>
+                Art der Kostenänderung als Ganzzahl: 0 = absoluter Wert, 1 = relativer Wert.
+            </xs:documentation>
+        </xs:annotation>
         <xs:restriction base="xs:integer"/>
     </xs:simpleType>
-    <xs:element name="Value" type="xs:decimal"/>
-    <xs:element name="PaymentMethod" type="xs:string"/>
-    <xs:element name="ShippingMethod" type="xs:string"/>
-    <xs:element name="LanguageCode" type="xs:string"/>
+    <xs:element name="Value" type="xs:decimal">
+        <xs:annotation>
+            <xs:documentation>
+                In CostsChanging der Betrag der Kostenänderung, in den AddInfo-Knoten der Wert der
+                Zusatzinformation.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PaymentMethod" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Zahlart der Bestellung. Der übergebene Wert wird über die Zahlartenzuordnung des Shops
+                aufgelöst, die zulässigen Werte sind daher konfigurationsabhängig.
+
+                Beispiel:
+                &lt;PaymentMethod&gt;creditcard&lt;/PaymentMethod&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ShippingMethod" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Versandart der Bestellung.
+
+                Beispiel: &lt;ShippingMethod&gt;standard&lt;/ShippingMethod&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="LanguageCode" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Code der Sprache der Bestellung.
+
+                Beispiel: &lt;LanguageCode&gt;de&lt;/LanguageCode&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="BillingParty">
+        <xs:annotation>
+            <xs:documentation>
+                Rechnungsanschrift der Bestellung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="AcademicTitle" minOccurs="0"/>
@@ -104,6 +440,11 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="DeliveryParty">
+        <xs:annotation>
+            <xs:documentation>
+                Lieferanschrift der Bestellung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="AcademicTitle" minOccurs="0"/>
@@ -128,6 +469,18 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="PaymentMethodValues">
+        <xs:annotation>
+            <xs:documentation>
+                Zusätzliche Informationen zur Zahlungsart.
+
+                Beispiel für Kreditkarte:
+                &lt;PaymentMethodsValues&gt;
+                  &lt;cardAuthorization&gt;96897GJHGJH6896789IUI97897ZUIZUI&lt;/cardAuthorization&gt;
+                  &lt;shortId&gt;3152.2746.4745&lt;/shortId&gt;
+                  &lt;transactionId&gt;76ghs676sdfhus878sfh897szuzu&lt;/transactionId&gt;
+                &lt;/PaymentMethodsValues&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="PaymentMethodValue" minOccurs="0" maxOccurs="unbounded"/>
@@ -135,12 +488,36 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="PaymentMethodValue">
+        <xs:annotation>
+            <xs:documentation>
+                Zusatzangabe zur Zahlart als Schlüssel-Wert-Paar, z.B. die Transaktionsnummer des
+                Zahlungsdienstleisters.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
-            <xs:attribute name="key" type="xs:string"/>
-            <xs:attribute name="value" type="xs:string"/>
+            <xs:attribute name="key" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Bezeichnung des Zahlartenfelds, z.B. die Transaktionsnummer des
+                        Zahlungsdienstleisters.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="value" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Wert des Zahlartenfelds.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Coupons">
+        <xs:annotation>
+            <xs:documentation>
+                Gutscheine der Bestellung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Coupon" maxOccurs="unbounded"/>
@@ -148,12 +525,26 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Coupon">
+        <xs:annotation>
+            <xs:documentation>
+                Ein einzelner Gutschein. Über OrderLineReferences wird festgelegt, auf welche
+                Positionen der Rabatt verteilt wird.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Id" minOccurs="0"/>
                 <xs:element ref="ExternId" minOccurs="0"/>
                 <xs:element ref="Code"/>
-                <xs:element name="Type" type="CouponType"/>
+                <xs:element name="Type" type="CouponType">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Typ des Gutscheins.
+
+                            Beispiel: &lt;Code&gt;Kampagne&lt;/Code&gt;
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element ref="ReduceType"/>
                 <xs:element ref="Rebate"/>
                 <xs:element ref="Title"/>
@@ -163,16 +554,79 @@
             </xs:choice>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Id" type="xs:string"/>
-    <xs:element name="ExternId" type="xs:string"/>
-    <xs:element name="Code" type="xs:string"/>
+    <xs:element name="Id" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                ID des Gutscheins aus brickfox.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ExternId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                ID des Gutscheins aus dem Marktplatz/Shop, dient als Kommunikationsmerkmal zwischen Marktplatz/Shop und brickfox.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Code" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Code des Gutscheins.
+
+                Beispiel: &lt;Code&gt;Gutschein123&lt;/Code&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:simpleType name="CouponType">
+        <xs:annotation>
+            <xs:documentation>
+                Art des Gutscheins. Der übergebene Wert wird über die im Mandanten angelegten
+                Gutscheinarten aufgelöst.
+            </xs:documentation>
+        </xs:annotation>
         <xs:restriction base="xs:string"/>
     </xs:simpleType>
-    <xs:element name="ReduceType" type="xs:string"/>
-    <xs:element name="Rebate" type="xs:decimal"/>
-    <xs:element name="CalculatedRebate" type="xs:decimal"/>
+    <xs:element name="ReduceType" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Rabattart des Gutscheins.
+
+                Mögliche Werte:
+                - ABSOLUTE (fester Betrag)
+                - RELATIVE (prozentual)
+                - SHIPPING (Versandkosten)
+                - MINAMOUNT (Mindestbestellwert)
+
+                Beispiel:
+                &lt;ReduceType&gt;ABSOLUTE&lt;/ReduceType&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Rebate" type="xs:decimal">
+        <xs:annotation>
+            <xs:documentation>
+                Individueller Rabatt des Gutscheins.
+
+                Beispiel für Typ ABSOLUTE mit absolutem Wert: &lt;Rebate&gt;3.99&lt;/Rebate&gt;
+                Beispiel für Typ RELATIVE mit prozentualem Wert: &lt;Rebate&gt;20&lt;/Rebate&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="CalculatedRebate" type="xs:decimal">
+        <xs:annotation>
+            <xs:documentation>
+                Absoluter Rabatt des Gutscheins.
+
+                Beispiel: &lt;CalculatedRebate&gt;3.99&lt;/CalculatedRebate&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Group">
+        <xs:annotation>
+            <xs:documentation>
+                Gutscheingruppe, über die mehrere Gutscheine zusammengefasst werden.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Id" minOccurs="0"/>
@@ -182,6 +636,11 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLineReferences">
+        <xs:annotation>
+            <xs:documentation>
+                Bestellpositionen, auf die sich der Gutschein bezieht.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="OrderLineReference" maxOccurs="unbounded"/>
@@ -189,6 +648,11 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLineReference">
+        <xs:annotation>
+            <xs:documentation>
+                Verweis auf eine Bestellposition mit dem darauf entfallenden Rabattanteil.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="OrderLineId"/>
@@ -197,14 +661,55 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLines">
+        <xs:annotation>
+            <xs:documentation>
+                Bestellpositionen.
+
+                Beispiel für eine normale Position:
+                &lt;OrderLine num="1"&gt;
+                  &lt;OrderLineId&gt;4448&lt;/OrderLineId&gt;
+                  &lt;ExternProductId&gt;500166&lt;/ExternProductId&gt;
+                  &lt;ProductName&gt;Rugby-Shirt Farbe grau, Größe M&lt;/ProductName&gt;
+                  &lt;ItemNumber&gt;1497349-M&lt;/ItemNumber&gt;
+                  &lt;EAN&gt;7391531298695&lt;/EAN&gt;
+                  &lt;QuantityOrdered&gt;1&lt;/QuantityOrdered&gt;
+                  &lt;ProductsPriceTotal&gt;45.90&lt;/ProductsPriceTotal&gt;
+                  &lt;ProductsPriceTotalNetto&gt;38.57&lt;/ProductsPriceTotalNetto&gt;
+                  &lt;VatPriceTotal&gt;7.33&lt;/VatPriceTotal&gt;
+                  &lt;TaxRate&gt;19.00&lt;/TaxRate&gt;
+                &lt;/OrderLine&gt;
+
+                Beispiel für einen Gutschein:
+                &lt;OrderLine num="2"&gt;
+                  &lt;OrderLineId&gt;87338&lt;/OrderLineId&gt;
+                  &lt;IsCoupon&gt;1&lt;/IsCoupon&gt;
+                  &lt;ProductName&gt;Gutschein&lt;/ProductName&gt;
+                  &lt;ItemNumber&gt;BF_COUPON&lt;/ItemNumber&gt;
+                  &lt;ProductsPriceTotal&gt;-25.00&lt;/ProductsPriceTotal&gt;
+                  &lt;TaxRate&gt;0.00&lt;/TaxRate&gt;
+                &lt;/OrderLine&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="OrderLine" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="count" type="xs:integer"/>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLine">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Position der Bestellung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="OrderLineId"/>
@@ -226,88 +731,412 @@
                 <xs:element ref="OrderLineOptions" minOccurs="0"/>
                 <xs:element ref="OrderLineAddInfos" minOccurs="0"/>
             </xs:choice>
-            <xs:attribute name="num" type="xs:integer"/>
+            <xs:attribute name="num" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="OrderLineId" type="xs:string"/>
-    <xs:element name="ProductId" type="xs:integer"/>
-    <xs:element name="ExternProductId" type="xs:string"/>
-    <xs:element name="ExternVariationId" type="xs:string"/>
-    <xs:element name="ProductName" type="xs:string"/>
-    <xs:element name="ItemNumber" type="xs:string"/>
-    <xs:element name="EAN" type="xs:string"/>
-    <xs:element name="VariationId" type="xs:integer"/>
-    <xs:element name="QuantityOrdered" type="xs:integer"/>
-    <xs:element name="ProductsPriceTotal" type="decimal-or-empty"/>
-    <xs:element name="ProductsPriceTotalNetto" type="decimal-or-empty"/>
-    <xs:element name="ProductsPrice" type="xs:decimal"/>
-    <xs:element name="ProductsPriceNetto" type="decimal-or-empty"/>
-    <xs:element name="VatPrice" type="decimal-or-empty"/>
-    <xs:element name="VatPriceTotal" type="decimal-or-empty"/>
-    <xs:element name="TaxRate" type="xs:decimal"/>
+    <xs:element name="OrderLineId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Bestellpositionen zwischen Marktplatz/Shop und brickfox.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductId" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                ID des Produkts aus brickfox.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ExternProductId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                ID des Produkts aus dem Marktplatz/Shop.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ExternVariationId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                ID der Variante aus dem Marktplatz/Shop.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductName" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Name des bestellten Artikels.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ItemNumber" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Artikelnummer des bestellten Artikels.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="EAN" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                EAN des bestellten Artikels.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VariationId" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                ID der Variante aus brickfox.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="QuantityOrdered" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Bestellte Menge.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductsPriceTotal" type="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Gesamter Warenwert der bestellten Artikel der Bestellposition.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductsPriceTotalNetto" type="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Gesamter Netto-Warenwert der bestellten Artikel der Bestellposition.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductsPrice" type="xs:decimal">
+        <xs:annotation>
+            <xs:documentation>
+                Warenwert des einzelnen bestellten Artikels der Bestellposition.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductsPriceNetto" type="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Netto-Warenwert des einzelnen bestellten Artikels der Bestellposition.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VatPrice" type="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Steuerwert des einzelnen bestellten Artikels der Bestellposition.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VatPriceTotal" type="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Gesamter Steuerwert der bestellten Artikels der Bestellposition.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="TaxRate" type="xs:decimal">
+        <xs:annotation>
+            <xs:documentation>
+                Steuerrate der Bestellposition.
+
+                Beispiel: &lt;TaxRate&gt;19.00&lt;/TaxRate&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="OrderLineOptions">
+        <xs:annotation>
+            <xs:documentation>
+                Variantenausprägungen der Bestellposition. Der Knoten trägt nur das count Attribut
+                und wird beim Import nicht weiter ausgewertet.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
-            <xs:attribute name="count" type="xs:integer"/>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="AcademicTitle" type="xs:string"/>
-    <xs:element name="Company" type="xs:string"/>
-    <xs:element name="CompanyAdd" type="xs:string"/>
-    <xs:element name="VatId" type="xs:string"/>
-    <xs:element name="FirstName" type="xs:string"/>
-    <xs:element name="LastName" type="xs:string"/>
-    <xs:element name="Address" type="xs:string"/>
-    <xs:element name="Number" type="xs:string"/>
-    <xs:element name="AddressAdd" type="xs:string"/>
-    <xs:element name="PostalCode" type="xs:string"/>
-    <xs:element name="City" type="xs:string"/>
-    <xs:element name="Country" type="xs:string"/>
-    <xs:element name="State" type="xs:string"/>
-    <xs:element name="PhonePrivate" type="xs:string"/>
-    <xs:element name="PhoneMobile" type="xs:string"/>
-    <xs:element name="Title" type="xs:string"/>
-    <xs:element name="EmailAddress" type="xs:string"/>
-    <xs:element name="DateOfBirth" type="xs:string"/>
+    <xs:element name="AcademicTitle" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Akademischer Titel, z.B. Dr.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Company" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Firmenname.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="CompanyAdd" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Zusatz zum Firmennamen.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VatId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Umsatzsteuer-Identifikationsnummer.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="FirstName" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Vorname.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="LastName" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Nachname. Pflichtangabe.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Address" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Straße der Anschrift, ohne Hausnummer. Die Hausnummer gehört in Number.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Number" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Hausnummer der Anschrift. Ein leeres Element wird übergangen, die Hausnummer bleibt
+                dann leer.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="AddressAdd" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Adresszusatz, z.B. Wohnung oder Stockwerk.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PostalCode" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Postleitzahl.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="City" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Ort.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Country" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Land der Anschrift als ISO-Ländercode, z.B. DE.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="State" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Bundesland bzw. Region der Anschrift. Wird von einzelnen Marktplätzen und für
+                Steuerberechnungen benötigt.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PhonePrivate" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Festnetznummer.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PhoneMobile" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Mobilnummer.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Title" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                In der Anschrift die Anrede, z.B. Herr oder Frau. Im Coupon-Knoten die Bezeichnung
+                des Gutscheins.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="EmailAddress" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                E-Mail-Adresse. Pflichtangabe.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="DateOfBirth" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Geburtsdatum im Format JJJJ-MM-TT.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:simpleType name="decimal-or-empty">
+        <xs:annotation>
+            <xs:documentation>
+                Dezimalzahl oder leerer Wert. Erlaubt es, einen Betrag bewusst leer zu lassen.
+            </xs:documentation>
+        </xs:annotation>
         <xs:union memberTypes="xs:decimal empty-string"/>
     </xs:simpleType>
     <xs:simpleType name="empty-string">
+        <xs:annotation>
+            <xs:documentation>
+                Hilfstyp für den leeren Wert. Wird nur innerhalb von decimal-or-empty verwendet.
+            </xs:documentation>
+        </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value=""/>
         </xs:restriction>
     </xs:simpleType>
     <xs:element name="OrderAddInfos">
+        <xs:annotation>
+            <xs:documentation>
+                Zusätzliche Informationen zur Bestellung.
+
+                Beispiel:
+                &lt;OrderAddInfos count="1"&gt;
+                  &lt;OrderAddInfo num="1"&gt;
+                    &lt;Key&gt;Marktplatz- oder Shopkey&lt;/Key&gt;
+                    &lt;Value&gt;XYZ&lt;/Value&gt;
+                  &lt;/OrderAddInfo&gt;
+                &lt;/OrderAddInfos&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="OrderAddInfo" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="count" type="xs:integer"/>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderAddInfo">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Zusatzinformation zur Bestellung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Key" type="xs:string"/>
-                <xs:element name="Value" type="xs:string"/>
+                <xs:element name="Key" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Bezeichnung der Zusatzinformation.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Value" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            In CostsChanging der Betrag der Kostenänderung, in den AddInfo-Knoten der Wert der
+                            Zusatzinformation.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:sequence>
-            <xs:attribute name="num" type="xs:integer"/>
+            <xs:attribute name="num" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLineAddInfos">
+        <xs:annotation>
+            <xs:documentation>
+                Zusatzinformationen zur Bestellposition als Schlüssel-Wert-Paare.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="OrderLineAddInfo" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="count" type="xs:integer"/>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLineAddInfo">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Zusatzinformation zur Bestellposition.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Key" type="xs:string"/>
-                <xs:element name="Value" type="xs:string"/>
+                <xs:element name="Key" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Bezeichnung der Zusatzinformation.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Value" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            In CostsChanging der Betrag der Kostenänderung, in den AddInfo-Knoten der Wert der
+                            Zusatzinformation.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:sequence>
-            <xs:attribute name="num" type="xs:integer"/>
+            <xs:attribute name="num" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
 </xs:schema>

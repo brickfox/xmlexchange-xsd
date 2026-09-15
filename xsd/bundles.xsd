@@ -5,14 +5,49 @@
 
     <!-- bundles elements -->
     <xs:element name="Products">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Produktbundles.
+                Das count Attribut gibt die Anzahl der enthaltenen Bundles an.
+
+                Beispiel:
+                &lt;Products count="2"&gt;
+                  &lt;ProductBundle&gt;...&lt;/ProductBundle&gt;
+                  &lt;ProductBundle&gt;...&lt;/ProductBundle&gt;
+                &lt;/Products&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="ProductBundle"/>
             </xs:sequence>
-            <xs:attribute name="count" type="xs:integer"/>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="ProductBundle">
+        <xs:annotation>
+            <xs:documentation>
+                Produktbundle mit Komponenten.
+
+                Ein Bundle ist ein Produkt, das aus mehreren anderen Produkten besteht.
+                Die Komponenten werden über ihre ItemNumber referenziert.
+
+                Beispiel:
+                &lt;ProductBundle&gt;
+                  &lt;ProductExternId&gt;7254356456&lt;/ProductExternId&gt;
+                  &lt;ItemNumber&gt;TS-1085-Bundle&lt;/ItemNumber&gt;
+                  &lt;Descriptions&gt;...&lt;/Descriptions&gt;
+                  &lt;Components&gt;...&lt;/Components&gt;
+                &lt;/ProductBundle&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="ProductExternId"/>
@@ -21,11 +56,32 @@
                 <xs:element ref="Component"/>
                 <xs:element ref="Components"/>
             </xs:choice>
-            <xs:attribute name="num" type="xs:integer"/>
+            <xs:attribute name="num" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ProductExternId" type="ItemString"/>
+    <xs:element name="ProductExternId" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Parent Artikel zwischen ERP/PIM und brickfox.
+
+                Beispiel: &lt;ProductExternId&gt;7254356456&lt;/ProductExternId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Descriptions">
+        <xs:annotation>
+            <xs:documentation>
+                Beschreibungen des Bundles, je Sprache ein Description-Knoten.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Description" maxOccurs="unbounded"/>
@@ -33,19 +89,60 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Description">
+        <xs:annotation>
+            <xs:documentation>
+                Beschreibung des Bundles in einer Sprache.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Title"/>
                 <xs:element ref="TitleShort" minOccurs="0"/>
                 <xs:element ref="ShortDescription" minOccurs="0"/>
             </xs:choice>
-            <xs:attribute name="lang" use="required" type="xs:string"/>
+            <xs:attribute name="lang" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                        angelegt sind, werden übersprungen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Title" type="ItemString"/>
-    <xs:element name="TitleShort" type="ItemString"/>
-    <xs:element name="ShortDescription" type="ItemString"/>
+    <xs:element name="Title" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Bezeichnung des Bundles in der jeweiligen Sprache.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="TitleShort" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Kurzbezeichnung des Bundles in der jeweiligen Sprache.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ShortDescription" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Kurzbeschreibung des Bundles in der jeweiligen Sprache.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Component">
+        <xs:annotation>
+            <xs:documentation>
+                Einzelne Komponente eines Bundles mit Artikelnummer und Menge.
+
+                Beispiel:
+                &lt;Component&gt;
+                  &lt;ItemNumber&gt;TS-1085&lt;/ItemNumber&gt;
+                  &lt;Quantity&gt;1&lt;/Quantity&gt;
+                &lt;/Component&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="ItemNumber"/>
@@ -54,12 +151,41 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Components">
+        <xs:annotation>
+            <xs:documentation>
+                Container für die Komponenten des Bundles.
+
+                Beispiel:
+                &lt;Components&gt;
+                  &lt;Component&gt;
+                    &lt;ItemNumber&gt;TS-1085&lt;/ItemNumber&gt;
+                    &lt;Quantity&gt;2&lt;/Quantity&gt;
+                  &lt;/Component&gt;
+                &lt;/Components&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice>
                 <xs:element ref="Component" minOccurs="0" maxOccurs="unbounded"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Quantity" type="ItemInteger"/>
-    <xs:element name="ItemNumber" type="ItemString"/>
+    <xs:element name="Quantity" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Anzahl, mit der die Komponente im Bundle enthalten ist.
+
+                Beispiel: &lt;Quantity&gt;2&lt;/Quantity&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ItemNumber" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Artikelnummer für das Bundle.
+
+                Beispiel: &lt;ItemNumber&gt;TS-1085-Bundle&lt;/ItemNumber&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
 </xs:schema>

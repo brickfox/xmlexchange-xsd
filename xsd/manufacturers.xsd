@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xs:element name="Manufacturers">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Herstellerangaben.
+
+                Diese Datei beschreibt die HERSTELLER im Sinne der EU-Produktsicherheitsverordnung
+                (GPSR), die von mehreren Marktplätzen abgefragt werden. Die Marken eines Artikels
+                werden dagegen über brands.xsd (Manufacturers.xml) übergeben.
+
+                Die Zuordnung zum Artikel erfolgt im ManufacturerInfo-Knoten der products.xml über
+                ID, Number oder Name.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="Manufacturer"/>
@@ -8,6 +20,18 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Manufacturer">
+        <xs:annotation>
+            <xs:documentation>
+                Ein Hersteller mit Anschrift und Kontaktdaten.
+
+                Die Felder ID, Number und Name dienen der Zuordnung: Es genügt, eines davon zu
+                füllen, die übrigen müssen vorhanden sein, dürfen aber leer bleiben. Über denselben
+                Wert wird der Hersteller im ManufacturerInfo-Knoten der products.xml referenziert.
+
+                Ist der Hersteller nicht in der EU ansässig (EuEstablished = false), gehört zusätzlich
+                der ResponsiblePerson-Knoten gefüllt.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="ID"/>
@@ -26,6 +50,15 @@
                 <xs:element ref="Image"/>
                 <xs:element ref="EuEstablished"/>
                 <xs:element name="ResponsiblePerson">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Verantwortliche Person bzw. Wirtschaftsakteur in der EU.
+
+                            Anzugeben, wenn der Hersteller nicht in der EU ansässig ist (EuEstablished = false).
+                            Mehrere Marktplätze verlangen diese Angaben in dem Fall als Pflichtfeld und weisen
+                            den Artikel sonst ab.
+                        </xs:documentation>
+                    </xs:annotation>
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element ref="Name"/>
@@ -44,8 +77,25 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ID" type="xs:string"/>
+    <xs:element name="ID" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Alphanumerische Hersteller-ID aus dem Vorsystem. Über sie wird der Hersteller
+                zugeordnet, sie muss also über alle Lieferungen hinweg stabil bleiben.
+
+                Es genügt, eines der Felder ID, Number oder Name zu füllen; ausgewertet werden sie in
+                dieser Reihenfolge.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Number">
+        <xs:annotation>
+            <xs:documentation>
+                Numerische Hersteller-Nummer aus dem Vorsystem. Ganzzahl oder leer.
+
+                Wird ausgewertet, wenn keine ID übergeben wurde.
+            </xs:documentation>
+        </xs:annotation>
         <xs:simpleType>
             <xs:union>
                 <xs:simpleType>
@@ -59,17 +109,111 @@
             </xs:union>
         </xs:simpleType>
     </xs:element>
-    <xs:element name="Type" type="xs:string"/>
-    <xs:element name="Name" type="xs:string"/>
-    <xs:element name="Street" type="xs:string"/>
-    <xs:element name="ZipCode" type="xs:string"/>
-    <xs:element name="City" type="xs:string"/>
-    <xs:element name="State" type="xs:string"/>
-    <xs:element name="Country" type="xs:string"/>
-    <xs:element name="Phone" type="xs:string"/>
-    <xs:element name="Fax" type="xs:string"/>
-    <xs:element name="Email" type="xs:string"/>
-    <xs:element name="Url" type="xs:string"/>
-    <xs:element name="Image" type="xs:string"/>
-    <xs:element name="EuEstablished" type="xs:boolean"/>
+    <xs:element name="Type" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Typ des Herstellers bzw. der verantwortlichen Person.
+
+                Mögliche Werte:
+                - GPSR (General Product Safety Regulation)
+                - FBO (Food Business Operator)
+
+                Ohne Angabe wird GPSR angenommen.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Name" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Name des Herstellers bzw. der verantwortlichen Person.
+
+                Wird zur Zuordnung herangezogen, wenn weder ID noch Number übergeben wurden.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Street" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Straße und Hausnummer der Anschrift.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ZipCode" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Postleitzahl der Anschrift.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="City" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Ort der Anschrift.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="State" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Bundesland bzw. Region der Anschrift. Wird von einzelnen Marktplätzen für die
+                GPSR-Angaben benötigt.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Country" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Land der Anschrift als ISO-Ländercode, z.B. DE, AT oder CH.
+
+                Der Wert wird über den ISO-Code aufgelöst; eine ausgeschriebene Länderbezeichnung
+                wird nicht erkannt und der Hersteller dann ohne Land angelegt.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Phone" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Telefonnummer für die Kontaktaufnahme, üblicherweise mit internationaler
+                Vorwahl.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Fax" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Faxnummer für die Kontaktaufnahme.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Email" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                E-Mail-Adresse für die Kontaktaufnahme.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Url" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Webseite des Herstellers bzw. der verantwortlichen Person.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Image" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Adresse eines Herstellerlogos.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="EuEstablished" type="xs:boolean">
+        <xs:annotation>
+            <xs:documentation>
+                Gibt an, ob der Hersteller in der EU ansässig ist.
+
+                true = in der EU ansässig
+                false = nicht in der EU ansässig; dann ist der ResponsiblePerson-Knoten zu füllen
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
 </xs:schema>

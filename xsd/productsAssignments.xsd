@@ -1,24 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xs:element name="Products">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Produktverknüpfungen.
+                Enthält Zuordnungen von Produkten zueinander (Cross-Selling, Up-Selling, Zubehör).
+
+                Beispiel:
+                &lt;Products count="3"&gt;
+                  &lt;Product num="1"&gt;...&lt;/Product&gt;
+                  &lt;Product num="2"&gt;...&lt;/Product&gt;
+                  &lt;Product num="3"&gt;...&lt;/Product&gt;
+                &lt;/Products&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="Product"/>
             </xs:sequence>
-            <xs:attribute name="count" use="required" type="xs:integer"/>
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Product">
+        <xs:annotation>
+            <xs:documentation>
+                Produkt mit seinen Verknüpfungen.
+
+                Beispiel:
+                &lt;Product num="1"&gt;
+                  &lt;ProductId&gt;31&lt;/ProductId&gt;
+                  &lt;Assignments&gt;
+                    &lt;Assignment type="crossselling" sort="1"&gt;
+                      &lt;ProductId&gt;32&lt;/ProductId&gt;
+                    &lt;/Assignment&gt;
+                  &lt;/Assignments&gt;
+                &lt;/Product&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="ProductId"/>
                 <xs:element ref="Assignments"/>
             </xs:sequence>
-            <xs:attribute name="num" use="required" type="xs:integer"/>
+            <xs:attribute name="num" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ProductId" type="xs:string"/>
+    <xs:element name="ProductId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Externe Artikel-ID aus dem Vorsystem, dieselbe wie ProductExternId in der
+                products.xml. Im Product-Knoten der Artikel, dem die Verknüpfungen zugeordnet werden;
+                im Assignment-Knoten der verknüpfte Artikel.
+
+                Ist der Artikel nicht auffindbar, wird die Verknüpfung übersprungen.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Assignments">
+        <xs:annotation>
+            <xs:documentation>
+                Liste der Produktverknüpfungen.
+
+                Beispiel für mehrere Verknüpfungstypen:
+                &lt;Assignments&gt;
+                  &lt;Assignment type="accessories" sort="1"&gt;
+                    &lt;ProductId&gt;52&lt;/ProductId&gt;
+                  &lt;/Assignment&gt;
+                  &lt;Assignment type="accessories" sort="2"&gt;
+                    &lt;ProductId&gt;53&lt;/ProductId&gt;
+                  &lt;/Assignment&gt;
+                  &lt;Assignment type="upselling" sort="1"&gt;
+                    &lt;ProductId&gt;36&lt;/ProductId&gt;
+                  &lt;/Assignment&gt;
+                  &lt;Assignment type="crossselling" sort="1"&gt;
+                    &lt;ProductId&gt;32&lt;/ProductId&gt;
+                  &lt;/Assignment&gt;
+                &lt;/Assignments&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element minOccurs="0" maxOccurs="unbounded" ref="Assignment"/>
@@ -26,12 +100,41 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Assignment">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Produktverknüpfung. Der verknüpfte Artikel steht im ProductId-Knoten, Art und
+                Reihenfolge in den Attributen.
+
+                Beispiel:
+                &lt;Assignment type="accessories" sort="1"&gt;
+                  &lt;ProductId&gt;52&lt;/ProductId&gt;
+                &lt;/Assignment&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="ProductId"/>
             </xs:sequence>
-            <xs:attribute name="sort" use="required" type="xs:integer"/>
-            <xs:attribute name="type" use="required" type="xs:string"/>
+            <xs:attribute name="sort" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Sortierreihenfolge der Verknüpfung, aufsteigend ab 0. Negative Werte führen dazu,
+                        dass die Verknüpfung übersprungen wird.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="type" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Art der Verknüpfung.
+
+                        Zulässig sind crossselling, upselling und accessories. Ist am ERP-Kanal die Option für
+                        eigene Verknüpfungsarten gesetzt, sind darüber hinaus beliebige Werte möglich.
+
+                        Eine Verknüpfung mit unbekannter Art wird übersprungen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
 </xs:schema>

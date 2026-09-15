@@ -2,10 +2,30 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <!-- attribute groups -->
     <xs:attributeGroup name="defaultAttributeGroup">
-        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        <xs:annotation>
+            <xs:documentation>
+                Standard Attributgruppe für Elemente. Das ignoreOnUpdate Attribut steuert ob Daten beim Update ignoriert werden sollen.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+            <xs:annotation>
+                <xs:documentation>
+                    Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                    unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                    Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                    in der Datei mitliefern zu müssen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:attributeGroup>
     <!-- own types -->
     <xs:complexType name="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Basistyp für String-Werte mit optionalem ignoreOnUpdate Attribut
+            </xs:documentation>
+        </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attributeGroup ref="defaultAttributeGroup"/>
@@ -13,6 +33,11 @@
         </xs:simpleContent>
     </xs:complexType>
     <xs:complexType name="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Basistyp für Integer-Werte mit optionalem ignoreOnUpdate Attribut
+            </xs:documentation>
+        </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="xs:integer">
                 <xs:attributeGroup ref="defaultAttributeGroup"/>
@@ -20,6 +45,12 @@
         </xs:simpleContent>
     </xs:complexType>
     <xs:complexType name="ItemDecimal">
+        <xs:annotation>
+            <xs:documentation>
+                Basistyp für Dezimal-Werte mit optionalem ignoreOnUpdate Attribut.
+                Wird z.B. für Preise verwendet.
+            </xs:documentation>
+        </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="xs:decimal">
                 <xs:attributeGroup ref="defaultAttributeGroup"/>
@@ -27,6 +58,13 @@
         </xs:simpleContent>
     </xs:complexType>
     <xs:complexType name="ItemDateTime">
+        <xs:annotation>
+            <xs:documentation>
+                Basistyp für Datums- und Zeitwerte mit optionalem ignoreOnUpdate Attribut.
+                Format: YYYY-MM-DD oder YYYY-MM-DD HH:MM:SS
+                Beispiel: 2022-04-01 00:00:00
+            </xs:documentation>
+        </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="DateTime">
                 <xs:attributeGroup ref="defaultAttributeGroup"/>
@@ -34,6 +72,12 @@
         </xs:simpleContent>
     </xs:complexType>
     <xs:complexType name="ItemIntegerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Basistyp für Integer-Werte die auch leer sein können.
+                Wird z.B. für optionale Mengenangaben verwendet.
+            </xs:documentation>
+        </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="integerOrEmpty">
                 <xs:attributeGroup ref="defaultAttributeGroup"/>
@@ -41,6 +85,12 @@
         </xs:simpleContent>
     </xs:complexType>
     <xs:complexType name="ItemDecimalOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Basistyp für Dezimal-Werte die auch leer sein können.
+                Wird z.B. für optionale Preisangaben wie UVP verwendet.
+            </xs:documentation>
+        </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="decimalOrEmpty">
                 <xs:attributeGroup ref="defaultAttributeGroup"/>
@@ -48,27 +98,72 @@
         </xs:simpleContent>
     </xs:complexType>
     <xs:simpleType name="integerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Ganzzahl oder leerer Wert. Ein leeres Element löscht den bisherigen Wert, ein
+                fehlendes Element lässt ihn unverändert.
+            </xs:documentation>
+        </xs:annotation>
         <xs:union memberTypes="xs:integer emptyString"/>
     </xs:simpleType>
     <xs:simpleType name="decimalOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Dezimalzahl oder leerer Wert. Ein leeres Element löscht den bisherigen Wert, ein
+                fehlendes Element lässt ihn unverändert.
+            </xs:documentation>
+        </xs:annotation>
         <xs:union memberTypes="xs:decimal emptyString"/>
     </xs:simpleType>
     <xs:simpleType name="emptyString">
+        <xs:annotation>
+            <xs:documentation>
+                Hilfstyp für den leeren Wert. Wird nur innerhalb von integerOrEmpty und
+                decimalOrEmpty verwendet.
+            </xs:documentation>
+        </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value=""/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="DateTime">
+        <xs:annotation>
+            <xs:documentation>
+                Datum, wahlweise mit Uhrzeit, im Format JJJJ-MM-TT bzw. JJJJ-MM-TT hh:mm:ss.
+
+                Beispiele:
+                &lt;SpecialPriceStart&gt;2026-01-31&lt;/SpecialPriceStart&gt;
+                &lt;SpecialPriceStart&gt;2026-01-31 23:59:59&lt;/SpecialPriceStart&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:restriction base="xs:token">
             <xs:pattern value="[0-9]{4}-[0-9]{2}-[0-9]{2}( [0-9]{2}:[0-9]{2}:[0-9]{2})?"/>
         </xs:restriction>
     </xs:simpleType>
-    <xs:element name="UID" type="xs:integer"/>
+    <xs:element name="UID" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutige ID. Wird nur für Exporte verwendet, bei Importen wird dieses Feld ignoriert.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="PrimeCost">
+        <xs:annotation>
+            <xs:documentation>
+                Einkaufspreis mit Währungsangabe.
+                Beispiel: &lt;PrimeCost cur="EUR"&gt;11.30&lt;/PrimeCost&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="ItemDecimalOrEmpty">
-                    <xs:attribute name="cur" use="required" type="xs:string"/>
+                    <xs:attribute name="cur" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ISO-Währungscode des Einkaufspreises, z.B. EUR. Pflichtangabe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>

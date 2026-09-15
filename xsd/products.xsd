@@ -5,15 +5,49 @@
 
     <!-- products elements -->
     <xs:element name="Products">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Produkte. Das count Attribut gibt die Anzahl der enthaltenen Produkte an.
+                Das VariationIdentifier Attribut wird nur für Exporte verwendet und beim Import ignoriert.
+
+                Beispiel:
+                &lt;Products count="2"&gt;
+                  &lt;Product id="1"&gt;...&lt;/Product&gt;
+                  &lt;Product id="2"&gt;...&lt;/Product&gt;
+                &lt;/Products&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="Product"/>
             </xs:sequence>
-            <xs:attribute name="count" type="xs:integer"/>
-            <xs:attribute name="VariationIdentifier" type="xs:string"/> <!-- will be ignored on import, just for export -->
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="VariationIdentifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Nur für Exporte. Benennt das Feld, über das die Varianten identifiziert werden.
+                        Beim Import wird das Attribut ignoriert.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute> <!-- will be ignored on import, just for export -->
         </xs:complexType>
     </xs:element>
     <xs:element name="Product">
+        <xs:annotation>
+            <xs:documentation>
+                Produkt Element mit allen produktspezifischen Informationen.
+                Jedes Produkt muss mindestens eine Variante enthalten.
+
+                Das id Attribut wird je XML-Datei ab 1 durchgezählt.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="UID" minOccurs="0"/>
@@ -33,27 +67,159 @@
                 <xs:element ref="Attributes" minOccurs="0"/>
                 <xs:element ref="ServiceOptions" minOccurs="0"/>
                 <xs:element ref="Categories"/>
-                <xs:element name="Descriptions" type="ProductsDescriptions"/>
-                <xs:element name="Images" type="Images" minOccurs="0"/>
-                <xs:element name="Media" type="Media" minOccurs="0"/>
+                <xs:element name="Descriptions" type="ProductsDescriptions">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Beschreibungen, je Sprache ein Description-Knoten. Im Product-Knoten die
+                            Beschreibungen des Parent Artikels, im Variation-Knoten die der Variante.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Images" type="Images" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Bilder des Artikels. Im Product-Knoten die Bilder des Parent Artikels, in
+                            VariationImages die Bilder der Variante.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Media" type="Media" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Weitere Dateien zum Artikel, z.B. Sicherheitsdatenblätter oder Videos. Im
+                            Product-Knoten die Dateien des Parent Artikels, in VariationMedia die der Variante.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element ref="Variations"/>
             </xs:choice>
-            <xs:attribute name="id" type="xs:integer"/>
+            <xs:attribute name="id" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Beim Import wird sie nicht
+                        ausgewertet, sie dient nur der Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ProductExternId" type="ItemString"/>
-    <xs:element name="Active" type="ItemInteger"/>
-    <xs:element name="TaxClass" type="ItemString"/>
-    <xs:element name="TaxRate" type="ItemString"/>
-    <xs:element name="ShippingMethod" type="ItemString"/>
-    <xs:element name="Manufacturer" type="ItemString"/>
-    <xs:element name="ManufacturerId" type="ItemInteger"/>
-    <xs:element name="ExternManufacturerId" type="ItemString"/>
+    <xs:element name="ProductExternId" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Parent Artikel zwischen ERP/PIM und brickfox.
+                Beispiel: &lt;ProductExternId&gt;7254356456&lt;/ProductExternId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Active" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Globale Artikelsteuerung in brickfox.
+                Nur Artikel mit Active = 1 sind verkaufbare Artikel.
+
+                Beispiel: &lt;Active&gt;1&lt;/Active&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="TaxClass" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Steuerklasse des Artikels. Es gibt keine feste Werteliste: Der übergebene Wert wird
+                über die Steuerklassen-Zuordnung des ERP-Kanals aufgelöst, es sind also frei wählbare
+                Werte möglich, solange sie dort hinterlegt sind. Ist der Wert nicht zugeordnet, wird
+                der Artikel mit einem Fehler abgewiesen.
+
+                Üblich sind standard und reduced.
+
+                Beispiel:
+                &lt;TaxClass&gt;standard&lt;/TaxClass&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="TaxRate" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Steuersatz des Artikels in Prozent. Wird nur ausgewertet, wenn der Kanal auf
+                Steuersätze statt Steuerklassen konfiguriert ist.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ShippingMethod" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Versandart des Artikels, z.B. für Speditionsartikel. Der Wert wird über die im System
+                hinterlegten Versandarten aufgelöst; mögliche Werte sind daher konfigurationsabhängig.
+
+                Beispiel:
+                &lt;ShippingMethod&gt;spedition&lt;/ShippingMethod&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Manufacturer" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Marke für Marktplätze. ACHTUNG: NICHT der Hersteller!
+                Klartextname wenn keine separate Manufacturers.xml übergeben wird.
+
+                Beispiele:
+                &lt;Manufacturer&gt;Adidas&lt;/Manufacturer&gt;
+                &lt;Manufacturer&gt;Boss&lt;/Manufacturer&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ManufacturerId" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Marke für Marktplätze. ACHTUNG: NICHT der Hersteller!
+                ID der Marke aus einer separat gelieferten Manufacturers.xml (brands.xsd).
+
+                Beispiel: &lt;ManufacturerId&gt;1234&lt;/ManufacturerId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ExternManufacturerId" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Marke für Marktplätze. ACHTUNG: NICHT der Hersteller!
+                Externe ID der Marke aus dem ERP/PIM, sofern nicht über ManufacturerId zugeordnet
+                wird.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="ManufacturerInfo">
+        <xs:annotation>
+            <xs:documentation>
+                Hersteller-Informationen. Es genügt einen der eindeutigen Werte zu übergeben -
+                die anderen Felder können leer sein müssen aber vorhanden sein.
+
+                Beispiel:
+                &lt;ManufacturerInfo&gt;
+                  &lt;ID&gt;123ABC&lt;/ID&gt;
+                  &lt;Number&gt;42&lt;/Number&gt;
+                  &lt;Name&gt;ExampleManufacturer&lt;/Name&gt;
+                &lt;/ManufacturerInfo&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="ID" type="xs:string"/>
+                <xs:element name="ID" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Hersteller-ID aus der ManufacturersInfo.xml (manufacturers.xsd), alphanumerisch.
+                            Es genügt, eines der Felder ID, Number oder Name zu füllen; die übrigen müssen
+                            vorhanden, dürfen aber leer sein.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element name="Number">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Hersteller-Nummer aus der ManufacturersInfo.xml (manufacturers.xsd), nur Ganzzahl
+                            oder leer.
+                            Es genügt, eines der Felder ID, Number oder Name zu füllen; die übrigen müssen
+                            vorhanden, dürfen aber leer sein.
+                        </xs:documentation>
+                    </xs:annotation>
                     <xs:simpleType>
                         <xs:union>
                             <xs:simpleType>
@@ -67,30 +233,99 @@
                         </xs:union>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element name="Name" type="xs:string"/>
+                <xs:element name="Name" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Hersteller-Name aus der ManufacturersInfo.xml (manufacturers.xsd), alphanumerisch.
+                            Es genügt, eines der Felder ID, Number oder Name zu füllen; die übrigen müssen
+                            vorhanden, dürfen aber leer sein.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Condition" type="ItemString"/>
-    <xs:element name="CountryOfOrigin" type="ItemString"/>
+    <xs:element name="Condition" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Code des Bearbeitungsstatus des Produkts.
+                Wird beim Import ignoriert.
+
+                Beispiel: &lt;Condition&gt;finished&lt;/Condition&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="CountryOfOrigin" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Herstellungsland, z.B. für Amazon.
+                Hier werden die üblichen ISO Codes erwartet: https://www.iso.org/obp/ui/#search
+
+                Beispiel: &lt;CountryOfOrigin&gt;DE&lt;/CountryOfOrigin&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="ServiceOptions">
+        <xs:annotation>
+            <xs:documentation>
+                Zusätzliche Serviceoptionen für das Produkt.
+                Wird für spezielle Dienstleistungen wie Montage, Garantieverlängerung etc. verwendet.
+
+                Beispiel:
+                &lt;ServiceOptions&gt;
+                &lt;ServiceOption&gt;
+                &lt;ServiceOptionId&gt;assembly&lt;/ServiceOptionId&gt;
+                &lt;ServiceOptionName&gt;Montage&lt;/ServiceOptionName&gt;
+                &lt;ServiceOptionPrice&gt;19.99&lt;/ServiceOptionPrice&gt;
+                &lt;/ServiceOption&gt;
+                &lt;/ServiceOptions&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="ServiceOption" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                        unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                        Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                        in der Datei mitliefern zu müssen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="ServiceOption">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Serviceoption, z.B. eine Garantieverlängerung. Die Bezeichnungen stehen in
+                Translations, die Ausprägungen in ServiceOptionValues.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Translations"/>
                 <xs:element ref="ServiceOptionValues"/>
             </xs:choice>
-            <xs:attribute name="externId" use="required" type="xs:string"/>
+            <xs:attribute name="externId" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiges Kommunikationsmerkmal zwischen ERP/PIM und brickfox. Muss über alle
+                        Lieferungen hinweg stabil bleiben, da der Datensatz darüber zugeordnet wird.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="ServiceOptionValues">
+        <xs:annotation>
+            <xs:documentation>
+                Auswahlwerte der Serviceoption.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="ServiceOptionValue" maxOccurs="unbounded"/>
@@ -98,33 +333,110 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="ServiceOptionValue">
+        <xs:annotation>
+            <xs:documentation>
+                Ein Auswahlwert der Serviceoption mit eigener Preisangabe.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Translations"/>
                 <xs:element ref="Currencies"/>
             </xs:choice>
-            <xs:attribute name="default" type="xs:integer"/>
-            <xs:attribute name="externId" use="required" type="xs:string"/>
+            <xs:attribute name="default" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Kennzeichnet den vorbelegten Wert der Serviceoption. 1 = Vorbelegung,
+                        0 oder nicht gesetzt = weiterer Wert.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="externId" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiges Kommunikationsmerkmal zwischen ERP/PIM und brickfox. Muss über alle
+                        Lieferungen hinweg stabil bleiben, da der Datensatz darüber zugeordnet wird.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Categories">
+        <xs:annotation>
+            <xs:documentation>
+                Kategoriezuordnungen für das Produkt.
+                Das Attribut ignoreOnUpdate kann auf 1 gesetzt werden, um die Kategorien bei einem Update nicht zu verändern.
+
+                Beispiel:
+                &lt;Categories&gt;
+                &lt;Category main="1"&gt;
+                &lt;ExternCategoryId&gt;100&lt;/ExternCategoryId&gt;
+                &lt;/Category&gt;
+                &lt;Category&gt;
+                &lt;ExternCategoryId&gt;13&lt;/ExternCategoryId&gt;
+                &lt;/Category&gt;
+                &lt;/Categories&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Category" maxOccurs="unbounded"/>
                 <xs:element ref="CategoriesPath" minOccurs="0"/>
             </xs:sequence>
-            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                        unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                        Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                        in der Datei mitliefern zu müssen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="CategoriesPath">
+        <xs:annotation>
+            <xs:documentation>
+                Kategoriepfad als Klartext, je Sprache ein Knoten. Alternative zur Zuordnung über
+                ExternCategoryId, wenn das Vorsystem nur Pfade liefert.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Path" type="ItemString" minOccurs="0"/>
+                <xs:element name="Path" type="ItemString" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Kategoriepfad als Klartext in der Sprache des umgebenden Knotens.
+
+                            Beispiel: &lt;Path&gt;Sport/Ballsport/Rugby&lt;/Path&gt;
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:sequence>
-            <xs:attribute name="lang" use="required" type="xs:string"/>
+            <xs:attribute name="lang" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                        angelegt sind, werden übersprungen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Category">
+        <xs:annotation>
+            <xs:documentation>
+                Einzelne Kategoriezuordnung. Das Attribut main="1" kennzeichnet die Hauptkategorie.
+                Es muss genau eine Hauptkategorie definiert werden.
+
+                Beispiel:
+                &lt;Category main="1"&gt;
+                &lt;ExternCategoryId&gt;100&lt;/ExternCategoryId&gt;
+                &lt;/Category&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="UID" minOccurs="0"/>
@@ -132,18 +444,66 @@
                 <xs:element ref="ExternCategoryId" minOccurs="0"/>
                 <xs:element ref="CategoryPath" minOccurs="0"/>
             </xs:sequence>
-            <xs:attribute name="main" type="xs:integer"/>
+            <xs:attribute name="main" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Kennzeichnet die Hauptkategorie des Artikels. 1 = Hauptkategorie, 0 oder nicht
+                        gesetzt = weitere Kategorie. Genau eine Kategorie sollte als Hauptkategorie
+                        gekennzeichnet sein.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ExternCategoryId" type="ItemString"/>
-    <xs:element name="CategoryPath" type="ItemString"/>
+    <xs:element name="ExternCategoryId" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                ID der Kategorie aus der separat gelieferten Categories.xml (categories.xsd).
+
+                Beispiel: &lt;ExternCategoryId&gt;100&lt;/ExternCategoryId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="CategoryPath" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Kategoriepfad als Klartext für diese eine Kategoriezuordnung.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:complexType name="ProductsDescriptions">
+        <xs:annotation>
+            <xs:documentation>
+                Beschreibungen des Parent Artikels, je Sprache ein Description-Knoten.
+            </xs:documentation>
+        </xs:annotation>
         <xs:sequence>
-            <xs:element name="Description" type="ProductDescription" maxOccurs="unbounded"/>
+            <xs:element name="Description" type="ProductDescription" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Beschreibung in einer Sprache. Die enthaltene Sprache steht im lang Attribut.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
-        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+            <xs:annotation>
+                <xs:documentation>
+                    Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                    unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                    Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                    in der Datei mitliefern zu müssen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:complexType name="ProductDescription">
+        <xs:annotation>
+            <xs:documentation>
+                Beschreibung des Parent Artikels in einer Sprache.
+            </xs:documentation>
+        </xs:annotation>
         <xs:choice maxOccurs="unbounded">
             <xs:element ref="Title"/>
             <xs:element ref="TitleShort" minOccurs="0"/>
@@ -156,15 +516,49 @@
             <xs:element ref="ProductUrl" minOccurs="0"/>
             <xs:element ref="BulletPoints" minOccurs="0"/>
         </xs:choice>
-        <xs:attribute name="lang" use="required" type="xs:string"/>
+        <xs:attribute name="lang" use="required" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                    angelegt sind, werden übersprungen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:complexType name="VariationDescriptions">
+        <xs:annotation>
+            <xs:documentation>
+                Beschreibungen der Variante, je Sprache ein Description-Knoten. Optional, da nur
+                wenige Marktplätze Variantendaten verarbeiten.
+            </xs:documentation>
+        </xs:annotation>
         <xs:sequence>
-            <xs:element name="Description" type="VariationDescription" maxOccurs="unbounded"/>
+            <xs:element name="Description" type="VariationDescription" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Beschreibung in einer Sprache. Die enthaltene Sprache steht im lang Attribut.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
-        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+            <xs:annotation>
+                <xs:documentation>
+                    Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                    unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                    Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                    in der Datei mitliefern zu müssen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:complexType name="VariationDescription">
+        <xs:annotation>
+            <xs:documentation>
+                Beschreibung der Variante in einer Sprache.
+            </xs:documentation>
+        </xs:annotation>
         <xs:choice maxOccurs="unbounded">
             <xs:element ref="ContentUnit" minOccurs="0"/>
             <xs:element ref="BasePriceQuantity" minOccurs="0"/>
@@ -179,50 +573,242 @@
             <xs:element ref="ProductUrl" minOccurs="0"/>
             <xs:element ref="OrderUnit" minOccurs="0"/>
         </xs:choice>
-        <xs:attribute name="lang" use="required" type="xs:string"/>
+        <xs:attribute name="lang" use="required" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                    angelegt sind, werden übersprungen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
-    <xs:element name="Title" type="ItemString"/>
-    <xs:element name="TitleShort" type="ItemString"/>
-    <xs:element name="ContentUnit" type="ItemString"/>
-    <xs:element name="BasePriceQuantity" type="ItemString"/>
-    <xs:element name="BasePriceUnit" type="ItemString"/>
-    <xs:element name="PriceUnit" type="ItemString"/>
-    <xs:element name="ShortDescription" type="ItemString"/>
-    <xs:element name="LongDescription" type="ItemString"/>
-    <xs:element name="SearchKeys" type="ItemString"/>
-    <xs:element name="SeoTitle" type="ItemString"/>
-    <xs:element name="SeoDescription" type="ItemString"/>
-    <xs:element name="SeoContent" type="ItemString"/>
-    <xs:element name="ProductUrl" type="ItemString"/>
-    <xs:element name="PackingUnit" type="ItemString"/>
-    <xs:element name="OrderQuantity" type="ItemString"/>
-    <xs:element name="OrderUnit" type="ItemString"/>
+    <xs:element name="Title" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Produkttitel.
+
+                Beispiel: &lt;Title&gt;T-Shirt&lt;/Title&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="TitleShort" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Kurzbezeichnung. Im Product-Knoten die des Parent Artikels, im Variation-Knoten die
+                der Variante.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ContentUnit" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Inhaltseinheit des Artikels (bei grundpreispflichtigen Artikeln).
+
+                Beispiel: &lt;ContentUnit&gt;kg&lt;/ContentUnit&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="BasePriceQuantity" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Grundpreismenge (optional).
+
+                Beispiel: &lt;BasePriceQuantity&gt;1.000&lt;/BasePriceQuantity&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="BasePriceUnit" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Grundpreismenge Einheit (optional).
+
+                Beispiel: &lt;BasePriceUnit&gt;Stück&lt;/BasePriceUnit&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PriceUnit" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Preiseinheit (optional).
+
+                Beispiel: &lt;PriceUnit&gt;Stück&lt;/PriceUnit&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ShortDescription" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Kurzbeschreibung des Produkts.
+
+                Beispiel: &lt;ShortDescription&gt;Schickes T-Shirt&lt;/ShortDescription&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="LongDescription" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Ausführliche Beschreibung des Produkts.
+
+                Beispiel: &lt;LongDescription&gt;Beschreibung eines schicken T-Shirts&lt;/LongDescription&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SearchKeys" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Suchbegriffe für Shops, durch Komma getrennt. Nur für Shops relevant,
+                Marktplätze verarbeiten das Feld nicht.
+
+                Beispiel: &lt;SearchKeys&gt;T-Shirt,V-Ausschnitt&lt;/SearchKeys&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SeoTitle" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Seitentitel für Suchmaschinen. Nur für Shops relevant.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SeoDescription" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Meta-Beschreibung für Suchmaschinen. Nur für Shops relevant.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SeoContent" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Zusätzlicher Inhalt für Suchmaschinen. Nur für Shops relevant.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductUrl" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                URL zum Produkt im Shop. Wird für Preissuchmaschinen-Feeds verwendet.
+
+                Beispiel: &lt;ProductUrl&gt;http://www.testshop.de/de/product_info.php?products_id=7254356456&lt;/ProductUrl&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PackingUnit" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Verpackungseinheit (optional, kann an Shopware übergeben werden).
+
+                Beispiel: &lt;PackingUnit&gt;Paket&lt;/PackingUnit&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderQuantity" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Bestellmenge, in der der Artikel verkauft wird.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderUnit" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Bestelleinheit, in der der Artikel verkauft wird.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:complexType name="Images">
+        <xs:annotation>
+            <xs:documentation>
+                Bilder des Artikels. Im Product-Knoten die Bilder des Parent Artikels, in
+                VariationImages die Bilder der Variante.
+            </xs:documentation>
+        </xs:annotation>
         <xs:sequence>
             <xs:element ref="Image" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+            <xs:annotation>
+                <xs:documentation>
+                    Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                    unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                    Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                    in der Datei mitliefern zu müssen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:element name="Image">
+        <xs:annotation>
+            <xs:documentation>
+                Ein Bild. Die Reihenfolge steuert das sort Attribut.
+
+                Beispiel:
+                &lt;Image sort="0"&gt;
+                  &lt;Path&gt;72_0.jpg&lt;/Path&gt;
+                  &lt;ImageAttributes&gt;
+                    &lt;ImageAttribute code="shop"&gt;
+                      &lt;Name&gt;Shopbild&lt;/Name&gt;
+                    &lt;/ImageAttribute&gt;
+                  &lt;/ImageAttributes&gt;
+                &lt;/Image&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Path"/>
                 <xs:element ref="Name" minOccurs="0"/>
                 <xs:element ref="ImageAttributes" minOccurs="0"/>
                 <xs:element ref="ImageDescriptions" minOccurs="0"/>
-                <xs:element name="AltText" type="xs:string"/>
+                <xs:element name="AltText" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Alternativtext des Bildes, z.B. für Barrierefreiheit und Suchmaschinen.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <!-- Dedizierte KI-Kennzeichnung des Bildes; dünner Alias auf das
                      Bildattribut mit Code "AIGenerated". truthy (1/true/yes/ja) =
                      KI-generiert, sonst (0/false/no/nein/leer) = Kennzeichnung
                      entfernen. Optional und abwärtskompatibel: der bestehende Weg
                      über <ImageAttribute code="AIGenerated"> bleibt unverändert. -->
-                <xs:element name="AiGenerated" type="xs:string" minOccurs="0"/>
+                <xs:element name="AiGenerated" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Kennzeichnet das Bild als KI-generiert. Kurzform für das Bildattribut mit dem Code
+                            AIGenerated.
+
+                            1, true, yes oder ja setzen die Kennzeichnung; 0, false, no, nein oder ein leerer Wert
+                            entfernen sie. Der Weg über &lt;ImageAttribute code="AIGenerated"&gt; bleibt daneben
+                            unverändert gültig.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:choice>
-            <xs:attribute name="sort" use="required" type="xs:integer"/>
-            <xs:attribute name="changed" type="xs:integer"/>
+            <xs:attribute name="sort" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Sortierreihenfolge, aufsteigend ab 0.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="changed" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Kennzeichnet den Eintrag als geändert, damit er neu verarbeitet wird.
+                        1 = geändert, 0 oder nicht gesetzt = unverändert.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="ImageAttributes">
+        <xs:annotation>
+            <xs:documentation>
+                Bildattribute zur Steuerung, in welchem Shop oder Marktplatz das Bild verwendet
+                wird.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice>
                 <xs:element ref="ImageAttribute" minOccurs="0" maxOccurs="unbounded"/>
@@ -230,6 +816,11 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="ImageDescriptions">
+        <xs:annotation>
+            <xs:documentation>
+                Alternativtexte des Bildes, je Sprache ein Knoten.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice>
                 <xs:element ref="ImageDescription" minOccurs="0" maxOccurs="unbounded"/>
@@ -237,40 +828,125 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="ImageAttribute">
+        <xs:annotation>
+            <xs:documentation>
+                Ein Bildattribut. Der Code AIGenerated kennzeichnet ein KI-generiertes Bild.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Name"/>
             </xs:choice>
-            <xs:attribute name="code" type="xs:string"/>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiger Code des Bildattributs. Über den Code wird gesteuert, in welchem Shop
+                        oder Marktplatz das Bild verwendet wird. Der Code AIGenerated kennzeichnet ein
+                        KI-generiertes Bild.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="ImageDescription">
+        <xs:annotation>
+            <xs:documentation>
+                Alternativtext des Bildes in einer Sprache.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="AltText"/>
             </xs:choice>
-            <xs:attribute name="lang" type="xs:string"/>
+            <xs:attribute name="lang" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                        angelegt sind, werden übersprungen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:complexType name="Media">
+        <xs:annotation>
+            <xs:documentation>
+                Weitere Dateien zum Artikel, z.B. Sicherheitsdatenblätter oder Videos. Im
+                Product-Knoten die Dateien des Parent Artikels, in VariationMedia die der Variante.
+            </xs:documentation>
+        </xs:annotation>
         <xs:sequence>
             <xs:element ref="MediaEntry" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+        <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+            <xs:annotation>
+                <xs:documentation>
+                    Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                    unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                    Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                    in der Datei mitliefern zu müssen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:element name="MediaEntry">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Datei. Die Reihenfolge steuert das sort Attribut.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Path"/>
                 <xs:element ref="Type" minOccurs="0"/>
                 <xs:element ref="Name" minOccurs="0"/>
             </xs:choice>
-            <xs:attribute name="sort" use="required" type="xs:integer"/>
-            <xs:attribute name="changed" type="xs:integer"/>
+            <xs:attribute name="sort" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Sortierreihenfolge, aufsteigend ab 0.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="changed" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Kennzeichnet den Eintrag als geändert, damit er neu verarbeitet wird.
+                        1 = geändert, 0 oder nicht gesetzt = unverändert.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Path" type="ItemString"/>
+    <xs:element name="Path" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Pfad oder Dateiname. Bei Nutzung des brickfox CDNs genügt der Dateiname
+                (z.B. 72_0.jpg), sonst wird die vollständige Adresse erwartet.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Variations">
+        <xs:annotation>
+            <xs:documentation>
+                Produktvarianten. Mindestens eine Variante ist erforderlich.
+                Bei mehr als einer Variante wird zusätzlich der Options-Knoten mit eindeutigen Werten benötigt.
+
+                Beispiel:
+                &lt;Variations&gt;
+                &lt;Variation&gt;
+                &lt;VariationExternId&gt;45526&lt;/VariationExternId&gt;
+                &lt;VariationItemNumber&gt;TS-1085-r-L&lt;/VariationItemNumber&gt;
+                &lt;EAN&gt;4385746564531&lt;/EAN&gt;
+                &lt;VariationActive&gt;1&lt;/VariationActive&gt;
+                &lt;Available&gt;0&lt;/Available&gt;
+                &lt;Stock&gt;0&lt;/Stock&gt;
+                ...
+                &lt;/Variation&gt;
+                &lt;/Variations&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Variation" maxOccurs="unbounded"/>
@@ -278,15 +954,45 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Variation">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Variante des Artikels. Jedes Produkt muss mindestens eine Variante enthalten.
+                Bei mehr als einer Variante wird zusätzlich der Options-Knoten benötigt.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="UID" minOccurs="0"/>
                 <!-- only for exports, this field will be ignored on import -->
                 <xs:element ref="VariationExternId"/>
-                <xs:element name="Weight" type="PackageUnit" minOccurs="0"/>
-                <xs:element name="Width" type="PackageUnit" minOccurs="0"/>
-                <xs:element name="Height" type="PackageUnit" minOccurs="0"/>
-                <xs:element name="Length" type="PackageUnit" minOccurs="0"/>
+                <xs:element name="Weight" type="PackageUnit" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Gewicht. Ohne unit Attribut in Gramm.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Width" type="PackageUnit" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Breite. Ohne unit Attribut in Millimeter.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Height" type="PackageUnit" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Höhe. Ohne unit Attribut in Millimeter.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Length" type="PackageUnit" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Länge. Ohne unit Attribut in Millimeter.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element ref="VariationItemNumber" minOccurs="0"/>
                 <xs:element ref="ManufacturerItemNumber" minOccurs="0"/>
                 <xs:element ref="MinimumOrderQuantity" minOccurs="0"/>
@@ -312,7 +1018,14 @@
                 <xs:element ref="ContentQuantity" minOccurs="0"/>
                 <xs:element ref="PriceQuantity" minOccurs="0"/>
                 <xs:element ref="OrderQuantity" minOccurs="0"/>
-                <xs:element name="Descriptions" type="VariationDescriptions" minOccurs="0"/>
+                <xs:element name="Descriptions" type="VariationDescriptions" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Beschreibungen, je Sprache ein Description-Knoten. Im Product-Knoten die
+                            Beschreibungen des Parent Artikels, im Variation-Knoten die der Variante.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element ref="Currencies"/>
                 <xs:element ref="Suppliers"/>
                 <xs:element ref="PrimeCost" minOccurs="0"/>
@@ -321,36 +1034,188 @@
                 <xs:element ref="IsBasePriceRequired" minOccurs="0"/>
                 <xs:element ref="Options" minOccurs="0"/>
                 <xs:element ref="Attributes" minOccurs="0"/>
-                <xs:element name="VariationImages" type="Images" minOccurs="0"/>
-                <xs:element name="VariationMedia" type="Media" minOccurs="0"/>
+                <xs:element name="VariationImages" type="Images" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Bilder der Variante.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="VariationMedia" type="Media" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Weitere Dateien der Variante.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element ref="Package" minOccurs="0"/>
             </xs:choice>
         </xs:complexType>
     </xs:element>
-    <xs:element name="VariationExternId" type="ItemString"/>
-    <xs:element name="VariationItemNumber" type="ItemString"/>
-    <xs:element name="ManufacturerItemNumber" type="ItemString"/>
-    <xs:element name="EAN" type="ItemString"/>
-    <xs:element name="ISBN" type="ItemString"/>
-    <xs:element name="MinimumOrderQuantity" type="ItemIntegerOrEmpty"/>
-    <xs:element name="MaximumOrderQuantity" type="ItemIntegerOrEmpty"/>
-    <xs:element name="DefaultQuantity" type="ItemIntegerOrEmpty"/>
-    <xs:element name="VariationActive" type="ItemInteger"/>
-    <xs:element name="VariationDeleted" type="xs:integer"/>
-    <xs:element name="Available" type="ItemInteger"/>
-    <xs:element name="ThirdPartyStockEnabled" type="ItemIntegerOrEmpty"/>
-    <xs:element name="ThirdPartyStock" type="ItemIntegerOrEmpty"/>
-    <xs:element name="DeliveryTime" type="ItemString"/>
+    <xs:element name="VariationExternId" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Variante zwischen ERP/PIM und brickfox.
+
+                Beispiel: &lt;VariationExternId&gt;45526&lt;/VariationExternId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VariationItemNumber" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Interne Artikelnummer für Variante (Brickfox Suche).
+
+                Beispiel: &lt;VariationItemNumber&gt;TS-1085-r-L&lt;/VariationItemNumber&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ManufacturerItemNumber" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Hersteller-Artikelnummer.
+
+                Beispiel: &lt;ManufacturerItemNumber&gt;12345XXX&lt;/ManufacturerItemNumber&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="EAN" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                EAN-Nummer der Variante.
+
+                Beispiel: &lt;EAN&gt;4385746564531&lt;/EAN&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ISBN" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                ISBN der Variante.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="MinimumOrderQuantity" type="ItemIntegerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Minimale Bestellmenge (z.B. für Amazon, Mercateo und Shopware).
+
+                Beispiel: &lt;MinimumOrderQuantity&gt;2&lt;/MinimumOrderQuantity&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="MaximumOrderQuantity" type="ItemIntegerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Maximale Bestellmenge (z.B. für Amazon, Mercateo und Shopware).
+
+                Beispiel: &lt;MaximumOrderQuantity&gt;10&lt;/MaximumOrderQuantity&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="DefaultQuantity" type="ItemIntegerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Im Shop vorbelegte Bestellmenge.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VariationActive" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Globale Variantensteuerung in brickfox.
+                Nur Varianten mit VariationActive = 1 sind verkaufbare Varianten.
+
+                Beispiel: &lt;VariationActive&gt;1&lt;/VariationActive&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VariationDeleted" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Nur für Exporte. Kennzeichnet eine gelöschte Variante. Beim Import wird das Element
+                ignoriert.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Available" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Verfügbarkeitsstatus der Variante.
+
+                Beispiel: &lt;Available&gt;1&lt;/Available&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ThirdPartyStockEnabled" type="ItemIntegerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Markierung von Streckenartikeln für virtuelle Marktplatzbestände.
+
+                Beispiel: &lt;ThirdPartyStockEnabled&gt;0&lt;/ThirdPartyStockEnabled&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ThirdPartyStock" type="ItemIntegerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Virtueller Bestand für Streckenartikel. Ersetzt das veraltete
+                ThirdPartyStockEnabled.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="DeliveryTime" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Lieferzeit für die Variante.
+
+                Beispiel: &lt;DeliveryTime&gt;3-4 Tage&lt;/DeliveryTime&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Stock">
+        <xs:annotation>
+            <xs:documentation>
+                Bestand der Variante. Ohne umgebenden Stocks-Knoten gilt der Wert als Gesamtbestand
+                über ein Lager.
+
+                Für mehrere Lager werden die Bestände in Stocks geklammert und je Lager über das
+                location Attribut unterschieden. Welche Lager an einen Shop oder Marktplatz gemeldet
+                werden, wird pro Kanal konfiguriert.
+
+                Beispiele:
+                &lt;Stock&gt;17&lt;/Stock&gt;
+
+                Mit Lagerort:
+                &lt;Stocks&gt;
+                  &lt;Stock location="Stuttgart"&gt;8&lt;/Stock&gt;
+                  &lt;Stock location="Muenchen"&gt;3&lt;/Stock&gt;
+                  &lt;Stock location="Berlin"&gt;2&lt;/Stock&gt;
+                &lt;/Stocks&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="ItemInteger">
-                    <xs:attribute name="location" type="xs:string"/>
+                    <xs:attribute name="location" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Bezeichnung des Lagers. Welche Lager an einen Shop oder Marktplatz gemeldet werden,
+                                wird pro Kanal konfiguriert. Ohne Angabe gilt der Wert für das Standardlager.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
     <xs:element name="Stocks">
+        <xs:annotation>
+            <xs:documentation>
+                Bestände je Lager. Welche Lager an einen Shop oder Marktplatz gemeldet werden, wird
+                pro Kanal konfiguriert.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Stock" maxOccurs="unbounded"/>
@@ -358,72 +1223,276 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="NeverOutOfStock">
+        <xs:annotation>
+            <xs:documentation>
+                Kennzeichnet die Variante als dauerhaft verfügbar, unabhängig vom Bestand.
+                Mit location Attribut gilt die Angabe je Lager.
+
+                1 = dauerhaft verfügbar, 0 = Bestand maßgeblich.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="ItemInteger">
-                    <xs:attribute name="location" type="xs:string"/>
+                    <xs:attribute name="location" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Bezeichnung des Lagers. Welche Lager an einen Shop oder Marktplatz gemeldet werden,
+                                wird pro Kanal konfiguriert. Ohne Angabe gilt der Wert für das Standardlager.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
     <xs:element name="NeverOutOfStocks">
+        <xs:annotation>
+            <xs:documentation>
+                Dauerhafte Verfügbarkeit je Lager.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="NeverOutOfStock" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:element name="UnitQuantity" type="ItemInteger"/>
-    <xs:element name="UnitName" type="ItemString"/>
+    <xs:element name="UnitQuantity" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Menge der Verpackungseinheit.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="UnitName" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Bezeichnung der Verpackungseinheit.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="DeliveryTimes">
+        <xs:annotation>
+            <xs:documentation>
+                Lieferzeiten je Sprache.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="DeliveryTime" type="ItemString"/>
+                <xs:element name="DeliveryTime" type="ItemString">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Lieferzeit der Variante. In DeliveryTimes je Sprache, sonst sprachneutral.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:sequence>
-            <xs:attribute name="lang" use="required" type="xs:string"/>
+            <xs:attribute name="lang" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                        angelegt sind, werden übersprungen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Suppliers">
+        <xs:annotation>
+            <xs:documentation>
+                Lieferanteninformationen. Optional und für keinen Marktplatz relevant.
+
+                Beispiel:
+                &lt;Suppliers&gt;
+                  &lt;Supplier name="default" main="1"&gt;
+                    &lt;PrimeCost cur="EUR"&gt;11.30&lt;/PrimeCost&gt;
+                    &lt;ProductName&gt;Produktname&lt;/ProductName&gt;
+                    &lt;ItemNumber&gt;123456&lt;/ItemNumber&gt;
+                  &lt;/Supplier&gt;
+                &lt;/Suppliers&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Supplier" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                        unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                        Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                        in der Datei mitliefern zu müssen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Supplier">
+        <xs:annotation>
+            <xs:documentation>
+                Ein Lieferant der Variante mit Einkaufspreis und Lieferantenartikelnummer.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="PrimeCost" minOccurs="0"/>
                 <xs:element ref="ProductName" minOccurs="0"/>
                 <xs:element ref="ItemNumber" minOccurs="0"/>
             </xs:choice>
-            <xs:attribute name="externId" type="xs:string"/>
-            <xs:attribute name="main" type="xs:integer"/>
-            <xs:attribute name="name" use="required" type="xs:string"/>
+            <xs:attribute name="externId" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiges Kommunikationsmerkmal zwischen ERP/PIM und brickfox. Muss über alle
+                        Lieferungen hinweg stabil bleiben, da der Datensatz darüber zugeordnet wird.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="main" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Kennzeichnet den Hauptlieferanten. 1 = Hauptlieferant, 0 oder nicht gesetzt =
+                        weiterer Lieferant.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Bezeichnung des Lieferanten. Pflichtangabe, da der Lieferant darüber zugeordnet
+                        wird.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="CustomsTariffNumber" type="ItemString"/>
-    <xs:element name="EprelRegistrationNumber" type="ItemString"/>
-    <xs:element name="IsBasePriceRequired" type="xs:integer"/>
-    <xs:element name="ProductName" type="ItemString"/>
+    <xs:element name="CustomsTariffNumber" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Zolltarifnummer der Variante, z.B. für Ausfuhrdokumente.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="EprelRegistrationNumber" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                EPREL-Registriernummer der Variante aus der EU-Energielabel-Datenbank.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="IsBasePriceRequired" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Kennzeichnet die Variante als grundpreispflichtig. 1 = grundpreispflichtig,
+                0 = nicht grundpreispflichtig.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductName" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Artikelbezeichnung beim Lieferanten.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Options">
+        <xs:annotation>
+            <xs:documentation>
+                Optionen für Varianten (z.B. Farbe, Größe). Nur bei Artikeln mit mehr als einer
+                Variante erforderlich.
+                Das Attribut ignoreOnUpdate kann auf 1 gesetzt werden, um die Optionen bei einem Update
+                nicht zu verändern.
+
+                Wichtig: Jede Options-Kombination darf pro Product-Knoten nur einmal vorkommen, sonst
+                sind die Varianten nicht unterscheidbar.
+
+                Beispiel:
+                &lt;Options&gt;
+                  &lt;Option&gt;
+                    &lt;Name&gt;color&lt;/Name&gt;
+                    &lt;Value&gt;red&lt;/Value&gt;
+                    &lt;Translations&gt;
+                      &lt;Translation lang="de"&gt;
+                        &lt;OptionName&gt;Farbe&lt;/OptionName&gt;
+                        &lt;OptionValue&gt;Rot&lt;/OptionValue&gt;
+                      &lt;/Translation&gt;
+                    &lt;/Translations&gt;
+                  &lt;/Option&gt;
+                  &lt;Option&gt;
+                    &lt;Name&gt;size&lt;/Name&gt;
+                    &lt;Value&gt;L&lt;/Value&gt;
+                    &lt;Translations&gt;
+                      &lt;Translation lang="de"&gt;
+                        &lt;OptionName&gt;Größe&lt;/OptionName&gt;
+                        &lt;OptionValue&gt;L&lt;/OptionValue&gt;
+                      &lt;/Translation&gt;
+                    &lt;/Translations&gt;
+                  &lt;/Option&gt;
+                &lt;/Options&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Option" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                        unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                        Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                        in der Datei mitliefern zu müssen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Option">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Variantenausprägung, z.B. Farbe oder Größe. Die Bezeichnungen stehen je Sprache
+                in Translations.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Translations" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ItemNumber" type="ItemString"/>
+    <xs:element name="ItemNumber" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Optionale Artikelnummer für Parent Artikel (z.B. für brickfox Suche)
+                Beispiel: &lt;ItemNumber&gt;TS-1085&lt;/ItemNumber&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Attributes">
+        <xs:annotation>
+            <xs:documentation>
+                Frei definierbare Eigenschaften für Shops und Marktplätze. Mehrsprachigkeit möglich.
+
+                Beispiel:
+                &lt;Attributes&gt;
+                  &lt;String code="Material"&gt;
+                    &lt;Translations&gt;
+                      &lt;Translation lang="de"&gt;
+                        &lt;Name&gt;Material&lt;/Name&gt;
+                        &lt;Value&gt;100% Baumwolle&lt;/Value&gt;
+                      &lt;/Translation&gt;
+                      &lt;Translation lang="en"&gt;
+                        &lt;Name&gt;material&lt;/Name&gt;
+                        &lt;Value&gt;100% cotton&lt;/Value&gt;
+                      &lt;/Translation&gt;
+                    &lt;/Translations&gt;
+                  &lt;/String&gt;
+                &lt;/Attributes&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -435,62 +1504,153 @@
                     <xs:element ref="DateTime"/>
                 </xs:choice>
             </xs:sequence>
-            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                        unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                        Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                        in der Datei mitliefern zu müssen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="String">
+        <xs:annotation>
+            <xs:documentation>
+                Attribut vom Typ Text bis 255 Zeichen.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Translations"/>
             </xs:sequence>
-            <xs:attribute name="code" type="xs:string"/>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiger Code des Attributs. Über diesen Code wird der Wert dem in brickfox
+                        angelegten Attribut zugeordnet; er muss über alle Lieferungen hinweg stabil bleiben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Integer">
+        <xs:annotation>
+            <xs:documentation>
+                Attribut vom Typ Ganzzahl.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Value"/>
                 <xs:element ref="Translations"/>
             </xs:choice>
-            <xs:attribute name="code" type="xs:string"/>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiger Code des Attributs. Über diesen Code wird der Wert dem in brickfox
+                        angelegten Attribut zugeordnet; er muss über alle Lieferungen hinweg stabil bleiben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Float">
+        <xs:annotation>
+            <xs:documentation>
+                Attribut vom Typ Dezimalzahl.
+
+                Für Mehrfachauswahl muss das Attribut in brickfox vorab als Mehrfachattribut angelegt
+                sein; sonst wird nur der zuletzt übergebene Wert importiert.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Value"/>
                 <xs:element ref="Translations"/>
             </xs:choice>
-            <xs:attribute name="code" type="xs:string"/>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiger Code des Attributs. Über diesen Code wird der Wert dem in brickfox
+                        angelegten Attribut zugeordnet; er muss über alle Lieferungen hinweg stabil bleiben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Boolean">
+        <xs:annotation>
+            <xs:documentation>
+                Attribut vom Typ Ja/Nein.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Value"/>
                 <xs:element ref="Translations"/>
             </xs:choice>
-            <xs:attribute name="code" type="xs:string"/>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiger Code des Attributs. Über diesen Code wird der Wert dem in brickfox
+                        angelegten Attribut zugeordnet; er muss über alle Lieferungen hinweg stabil bleiben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="DateTime">
+        <xs:annotation>
+            <xs:documentation>
+                Attribut vom Typ Datum, wahlweise mit Uhrzeit.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Value"/>
                 <xs:element ref="Translations"/>
             </xs:choice>
-            <xs:attribute name="code" type="xs:string"/>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiger Code des Attributs. Über diesen Code wird der Wert dem in brickfox
+                        angelegten Attribut zugeordnet; er muss über alle Lieferungen hinweg stabil bleiben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Text">
+        <xs:annotation>
+            <xs:documentation>
+                Attribut vom Typ Text ohne Längenbegrenzung. Für Inhalte mit mehr als 255 Zeichen
+                statt String verwenden.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Translations"/>
             </xs:sequence>
-            <xs:attribute name="code" type="xs:string"/>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiger Code des Attributs. Über diesen Code wird der Wert dem in brickfox
+                        angelegten Attribut zugeordnet; er muss über alle Lieferungen hinweg stabil bleiben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Translations">
+        <xs:annotation>
+            <xs:documentation>
+                Übersetzungen, je Sprache ein Translation-Knoten.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Translation" maxOccurs="unbounded"/>
@@ -498,6 +1658,11 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Translation">
+        <xs:annotation>
+            <xs:documentation>
+                Übersetzung für eine Sprache.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Name" minOccurs="0"/>
@@ -510,25 +1675,111 @@
                     </xs:sequence>
                 </xs:choice>
             </xs:sequence>
-            <xs:attribute name="lang" use="required" type="xs:string"/>
-            <xs:attribute name="name"/>
-            <xs:attribute name="value"/>
-            <xs:attribute name="code" type="xs:string"/>
+            <xs:attribute name="lang" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                        angelegt sind, werden übersprungen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="name">
+                <xs:annotation>
+                    <xs:documentation>
+                        Alternative Kurzschreibweise für den Namen des Attributwerts, statt des
+                        Name-Kindelements.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="value">
+                <xs:annotation>
+                    <xs:documentation>
+                        Alternative Kurzschreibweise für den Attributwert, statt des Value-Kindelements.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiger Code des Attributwerts, sofern die Werte einer Auswahlliste zugeordnet
+                        werden sollen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Unit" type="ItemString"/>
-    <xs:element name="OptionName" type="ItemString"/>
-    <xs:element name="OptionValue" type="ItemString"/>
+    <xs:element name="Unit" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Einheit des Attributwerts, z.B. cm oder kg.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OptionName" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Bezeichnung des Merkmals in der jeweiligen Sprache, z.B. Farbe. Frei wählbar;
+                zu beachten sind die Längenbegrenzungen der Zielkanäle.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OptionValue" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Wert des Merkmals in der jeweiligen Sprache, z.B. Rot.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Currencies">
+        <xs:annotation>
+            <xs:documentation>
+                Preise in verschiedenen Währungen. Brutto oder Netto möglich.
+                Jede Währung kann einem Shop oder Marktplatz zugewiesen werden.
+
+                Beispiel:
+                &lt;Currencies net="true"&gt;
+                &lt;Currency code="EUR"&gt;
+                &lt;Price&gt;17.7834&lt;/Price&gt;
+                &lt;Rrp&gt;21.69&lt;/Rrp&gt;
+                &lt;SpecialPrice&gt;11.33&lt;/SpecialPrice&gt;
+                &lt;SpecialPriceStart&gt;2022-01-03 00:00:00&lt;/SpecialPriceStart&gt;
+                &lt;SpecialPriceEnd&gt;2022-02-03 00:00:00&lt;/SpecialPriceEnd&gt;
+                &lt;/Currency&gt;
+                &lt;/Currencies&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Currency" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="net" type="xs:boolean"/>
-            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0"/>
+            <xs:attribute name="net" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Preisangabe netto (true) oder brutto (false). Am Currencies-Knoten gilt die Angabe für
+                        alle enthaltenen Währungen, am Currency-Knoten nur für diese eine Währung.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="ignoreOnUpdate" type="xs:integer" default="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Steuert, ob der Knoten bei einem Update übergangen wird. 1 = vorhandene Daten
+                        unverändert lassen, 0 (Vorgabe) = Daten aus der Datei übernehmen.
+
+                        Damit lassen sich einzelne Bereiche eines Artikels aus dem Update ausnehmen, ohne sie
+                        in der Datei mitliefern zu müssen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Currency">
+        <xs:annotation>
+            <xs:documentation>
+                Preisliste einer Währung. Über den Code wird die Preisliste dem Shop oder Marktplatz
+                zugeordnet.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:choice maxOccurs="unbounded">
@@ -542,29 +1793,123 @@
                     <xs:element ref="SpecialPriceEnd" minOccurs="0"/>
                 </xs:choice>
             </xs:sequence>
-            <xs:attribute name="code" use="required" type="xs:string"/>
-            <xs:attribute name="net" type="xs:boolean"/>
-            <xs:attribute name="price" type="xs:decimal"/>
+            <xs:attribute name="code" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        ISO-Währungscode der Preisliste, z.B. EUR. Pflichtangabe. Über den Code wird die
+                        Preisliste dem Shop oder Marktplatz zugeordnet.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="net" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Preisangabe netto (true) oder brutto (false). Am Currencies-Knoten gilt die Angabe für
+                        alle enthaltenen Währungen, am Currency-Knoten nur für diese eine Währung.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="price" type="xs:decimal">
+                <xs:annotation>
+                    <xs:documentation>
+                        Nur für Exporte. Enthält den effektiven Preis der Währung. Beim Import wird das
+                        Attribut ignoriert.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Package">
+        <xs:annotation>
+            <xs:documentation>
+                Paketmaße (z.B. für Amazon FBA oder Online Shop).
+
+                Beispiel:
+                &lt;Package&gt;
+                &lt;Weight unit="g"&gt;1500&lt;/Weight&gt;
+                &lt;Width unit="cm"&gt;100&lt;/Width&gt;
+                &lt;Height unit="mm"&gt;200&lt;/Height&gt;
+                &lt;Length unit="mm"&gt;250&lt;/Length&gt;
+                &lt;/Package&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
-                <xs:element name="Weight" type="PackageUnit" minOccurs="0"/>
-                <xs:element name="Width" type="PackageUnit" minOccurs="0"/>
-                <xs:element name="Height" type="PackageUnit" minOccurs="0"/>
-                <xs:element name="Length" type="PackageUnit" minOccurs="0"/>
+                <xs:element name="Weight" type="PackageUnit" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Gewicht. Ohne unit Attribut in Gramm.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Width" type="PackageUnit" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Breite. Ohne unit Attribut in Millimeter.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Height" type="PackageUnit" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Höhe. Ohne unit Attribut in Millimeter.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Length" type="PackageUnit" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Länge. Ohne unit Attribut in Millimeter.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:choice>
         </xs:complexType>
     </xs:element>
     <xs:complexType name="PackageUnit">
+        <xs:annotation>
+            <xs:documentation>
+                Maßangabe mit optionaler Einheit im unit Attribut.
+            </xs:documentation>
+        </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="ItemDecimal">
-                <xs:attribute name="unit" type="xs:string"/>
+                <xs:attribute name="unit" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Einheit des Werts. Der Wert wird auf die Basiseinheit umgerechnet und als Ganzzahl
+                            gespeichert: Gewichte in Gramm, Längen in Millimeter.
+
+                            Unterstützt werden g, kg und t für Gewichte sowie mm, cm, dm, m und km für Längen.
+                            Ohne Angabe wird die Basiseinheit angenommen (g bzw. mm).
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
     <xs:element name="ScalePrices">
+        <xs:annotation>
+            <xs:documentation>
+                Staffelpreise für z.B. Amazon B2B, Mercateo oder Shops.
+
+                Beispiel:
+                &lt;ScalePrices&gt;
+                &lt;ScalePrice&gt;
+                &lt;Quantity&gt;5&lt;/Quantity&gt;
+                &lt;Price&gt;10&lt;/Price&gt;
+                &lt;/ScalePrice&gt;
+                &lt;ScalePrice&gt;
+                &lt;Quantity&gt;10&lt;/Quantity&gt;
+                &lt;Price&gt;8&lt;/Price&gt;
+                &lt;/ScalePrice&gt;
+                &lt;ScalePrice&gt;
+                &lt;Quantity&gt;20&lt;/Quantity&gt;
+                &lt;Price&gt;6&lt;/Price&gt;
+                &lt;/ScalePrice&gt;
+                &lt;/ScalePrices&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="ScalePrice" maxOccurs="unbounded"/>
@@ -572,6 +1917,11 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="ScalePrice">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Preisstaffel: Preis ab der in Quantity genannten Bestellmenge.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Price" minOccurs="0"/>
@@ -579,19 +1929,120 @@
             </xs:choice>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Quantity" type="ItemInteger"/>
-    <xs:element name="Price" type="ItemDecimal"/>
-    <xs:element name="Rrp" type="ItemDecimalOrEmpty"/>
-    <xs:element name="PriceQuantity" type="ItemInteger"/>
-    <xs:element name="SpecialPrice" type="ItemDecimal"/>
-    <xs:element name="SpecialPriceStart" type="ItemDateTime"/>
-    <xs:element name="SpecialPriceEnd" type="ItemDateTime"/>
-    <xs:element name="Name" type="ItemString"/>
-    <xs:element name="AltText" type="ItemString"/>
-    <xs:element name="Type" type="ItemString"/>
-    <xs:element name="Value" type="ItemString"/>
-    <xs:element name="ContentQuantity" type="ItemDecimal"/>
+    <xs:element name="Quantity" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Ab-Menge der Preisstaffel: Der Preis gilt ab dieser Bestellmenge.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Price" type="ItemDecimal">
+        <xs:annotation>
+            <xs:documentation>
+                Verkaufspreis.
+
+                Beispiel: &lt;Price&gt;17.7834&lt;/Price&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Rrp" type="ItemDecimalOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Unverbindliche Preisempfehlung (UVP).
+
+                Beispiel: &lt;Rrp&gt;21.69&lt;/Rrp&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PriceQuantity" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Preismenge, auf die sich der Preis bezieht.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SpecialPrice" type="ItemDecimal">
+        <xs:annotation>
+            <xs:documentation>
+                Sonder-/Streichpreis.
+
+                Beispiel: &lt;SpecialPrice&gt;11.33&lt;/SpecialPrice&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SpecialPriceStart" type="ItemDateTime">
+        <xs:annotation>
+            <xs:documentation>
+                Startdatum für den Sonderpreis.
+
+                Beispiel: &lt;SpecialPriceStart&gt;2022-01-03 00:00:00&lt;/SpecialPriceStart&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SpecialPriceEnd" type="ItemDateTime">
+        <xs:annotation>
+            <xs:documentation>
+                Enddatum für den Sonderpreis.
+
+                Beispiel: &lt;SpecialPriceEnd&gt;2022-02-03 00:00:00&lt;/SpecialPriceEnd&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Name" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Bezeichnung. In Bildattributen die frei wählbare Bezeichnung des Attributs, in
+                Attributen und Optionen die Bezeichnung des Merkmals in der jeweiligen Sprache.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="AltText" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Alternativtext des Bildes, z.B. für Barrierefreiheit und Suchmaschinen.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Type" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Art der Datei, z.B. datasheet oder video.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Value" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Wert des Attributs in der jeweiligen Sprache.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ContentQuantity" type="ItemDecimal">
+        <xs:annotation>
+            <xs:documentation>
+                Inhalt/Menge des Artikels (bei grundpreispflichtigen Artikeln).
+
+                Beispiel: &lt;ContentQuantity&gt;0.3&lt;/ContentQuantity&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="BulletPoints">
+        <xs:annotation>
+            <xs:documentation>
+                Sellingpoints für z.B. OTTO und Amazon. Bis zu 10 Bulletpoints können angegeben
+                werden; die ersten fünf werden für Amazon verwendet, die weiteren stehen z.B. für
+                eBay-Templates oder Shops zur Verfügung. Die Reihenfolge steuert das sort Attribut.
+
+                Beispiel:
+                &lt;BulletPoints&gt;
+                  &lt;Bullet sort="0"&gt;Bullet1&lt;/Bullet&gt;
+                  &lt;Bullet sort="1"&gt;Bullet2&lt;/Bullet&gt;
+                  &lt;Bullet sort="2"&gt;Bullet3&lt;/Bullet&gt;
+                  &lt;Bullet sort="3"&gt;Bullet4&lt;/Bullet&gt;
+                  &lt;Bullet sort="4"&gt;Bullet5&lt;/Bullet&gt;
+                &lt;/BulletPoints&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Bullet" minOccurs="0" maxOccurs="unbounded"/>
@@ -599,10 +2050,22 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Bullet">
+        <xs:annotation>
+            <xs:documentation>
+                Ein Sellingpoint. Die Reihenfolge steuert das sort Attribut.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="ItemString">
-                    <xs:attribute name="sort" use="required" type="xs:string"/>
+                    <xs:attribute name="sort" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Sortierreihenfolge des Bulletpoints, aufsteigend ab 0. Pflichtangabe. Die ersten
+                                fünf Bulletpoints werden für Amazon verwendet.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>

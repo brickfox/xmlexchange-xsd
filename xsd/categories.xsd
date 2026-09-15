@@ -1,14 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xs:element name="Categories">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Warengruppen.
+                Enthält die Warengruppenstruktur für brickfox.
+
+                Beispiel:
+                &lt;Categories count="4"&gt;
+                  &lt;Category num="1"&gt;
+                    &lt;CategoryId&gt;100&lt;/CategoryId&gt;
+                    &lt;ParentId/&gt;
+                    &lt;Translations&gt;
+                      &lt;Translation lang="de"&gt;
+                        &lt;Name&gt;Sport&lt;/Name&gt;
+                      &lt;/Translation&gt;
+                    &lt;/Translations&gt;
+                  &lt;/Category&gt;
+                &lt;/Categories&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="Category"/>
             </xs:sequence>
-            <xs:attribute name="count" use="required" type="xs:integer"/>
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Category">
+        <xs:annotation>
+            <xs:documentation>
+                Einzelne Warengruppe. Die Zuordnung läuft über CategoryId, die Einordnung in den
+                Baum über ParentId.
+
+                Beispiel für eine Unterwarengruppe:
+                &lt;Category num="2"&gt;
+                  &lt;CategoryId&gt;bf-256&lt;/CategoryId&gt;
+                  &lt;ParentId&gt;100&lt;/ParentId&gt;
+                  &lt;Translations&gt;
+                    &lt;Translation lang="de"&gt;
+                      &lt;Name&gt;Rugby&lt;/Name&gt;
+                    &lt;/Translation&gt;
+                  &lt;/Translations&gt;
+                &lt;/Category&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="UID" minOccurs="0"/> <!-- only for exports, this field will be ignored on import -->
@@ -18,16 +61,92 @@
                 <xs:element ref="SortOrder" minOccurs="0"/>
                 <xs:element ref="Translations"/>
             </xs:sequence>
-            <xs:attribute name="id" type="xs:integer"/>
-            <xs:attribute name="num" type="xs:integer"/>
+            <xs:attribute name="id" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Beim Import wird sie nicht
+                        ausgewertet, sie dient nur der Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="num" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="UID" type="xs:integer"/>
-    <xs:element name="ParentUID" type="integerOrEmpty"/>
-    <xs:element name="CategoryId" type="xs:string"/>
-    <xs:element name="ParentId" type="xs:string"/>
-    <xs:element name="SortOrder" type="integerOrEmpty"/>
+    <xs:element name="UID" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Nur für Exporte. Interne brickfox-ID der Kategorie. Beim Import wird das Element
+                ignoriert.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ParentUID" type="integerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Nur für Exporte. Interne brickfox-ID der übergeordneten Kategorie. Beim Import wird
+                das Element ignoriert.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="CategoryId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutige ID der Warengruppe.
+                Wird für die Zuordnung von Produkten und die Hierarchiebildung verwendet.
+
+                Beispiele:
+                - &lt;CategoryId&gt;100&lt;/CategoryId&gt;
+                - &lt;CategoryId&gt;bf-256&lt;/CategoryId&gt;
+                - &lt;CategoryId&gt;13&lt;/CategoryId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ParentId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                ID der übergeordneten Warengruppe.
+                Leer bei Hauptwarengruppen, enthält CategoryId der Elternwarengruppe bei Unterwarengruppen.
+
+                Beispiele:
+                - &lt;ParentId/&gt; (Hauptwarengruppe)
+                - &lt;ParentId&gt;100&lt;/ParentId&gt; (Unterwarengruppe von Sport)
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SortOrder" type="integerOrEmpty">
+        <xs:annotation>
+            <xs:documentation>
+                Optionale Sortierreihenfolge der Warengruppe.
+                Kann leer sein oder eine Ganzzahl enthalten.
+
+                Beispiel:
+                &lt;SortOrder&gt;100&lt;/SortOrder&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Translations">
+        <xs:annotation>
+            <xs:documentation>
+                Übersetzungen der Warengruppenbezeichnungen.
+                Ermöglicht mehrsprachige Warengruppennamen und Beschreibungen.
+
+                Beispiel:
+                &lt;Translations&gt;
+                  &lt;Translation lang="de"&gt;
+                    &lt;Name&gt;Tennis&lt;/Name&gt;
+                    &lt;Description&gt;Alles für den Tennissport&lt;/Description&gt;
+                  &lt;/Translation&gt;
+                &lt;/Translations&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="Translation"/>
@@ -35,20 +154,47 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Translation">
+        <xs:annotation>
+            <xs:documentation>
+                Übersetzung der Kategorie für eine Sprache.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Name"/>
                 <xs:element ref="Description" minOccurs="0"/>
             </xs:sequence>
-            <xs:attribute name="lang" use="required" type="xs:string"/>
+            <xs:attribute name="lang" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                        angelegt sind, werden übersprungen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Name" type="xs:string"/>
-    <xs:element name="Description" type="xs:string"/>
-    <xs:simpleType name="integerOrEmpty">
+    <xs:element name="Name" type="xs:string">
         <xs:annotation>
-            <xs:documentation>The number-or-normal values can be either a positive integer or an empty string. This is
-                used for the content of the ensemble element.
+            <xs:documentation>
+                Bezeichnung der Kategorie in der jeweiligen Sprache.
+
+                Beispiel: &lt;Name&gt;Sport&lt;/Name&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Description" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Beschreibungstext der Kategorie in der jeweiligen Sprache.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:simpleType name="integerOrEmpty">
+                <xs:annotation>
+            <xs:documentation>
+                Ganzzahl oder leerer Wert. Ein leeres Element löscht den bisherigen Wert, ein
+                fehlendes Element lässt ihn unverändert.
             </xs:documentation>
         </xs:annotation>
         <xs:union memberTypes="xs:integer">

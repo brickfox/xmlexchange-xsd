@@ -5,15 +5,53 @@
 
     <!-- products elements -->
     <xs:element name="Products">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Produkte, die aktualisiert werden sollen.
+                Das count Attribut gibt die Anzahl der enthaltenen Produkte an.
+
+                Beispiel:
+                &lt;Products count="2"&gt;
+                  &lt;ProductUpdate&gt;...&lt;/ProductUpdate&gt;
+                  &lt;ProductUpdate&gt;...&lt;/ProductUpdate&gt;
+                &lt;/Products&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="ProductUpdate"/>
             </xs:sequence>
-            <xs:attribute name="count" use="required" type="xs:integer"/>
-            <xs:attribute name="VariationIdentifier" type="xs:string"/> <!-- only for exports, will be ignored on import -->
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="VariationIdentifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Nur für Exporte. Benennt das Feld, über das die Varianten identifiziert werden.
+                        Beim Import wird das Attribut ignoriert.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute> <!-- only for exports, will be ignored on import -->
         </xs:complexType>
     </xs:element>
     <xs:element name="ProductUpdate">
+        <xs:annotation>
+            <xs:documentation>
+                Produkt, das aktualisiert werden soll. Identifizierung über ProductExternId.
+
+                Beispiel:
+                &lt;ProductUpdate&gt;
+                  &lt;ProductExternId&gt;7254356456&lt;/ProductExternId&gt;
+                  &lt;Active&gt;1&lt;/Active&gt;
+                  &lt;Variations&gt;...&lt;/Variations&gt;
+                &lt;/ProductUpdate&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="UID" minOccurs="0"/> <!-- only for exports, this field will be ignored on import -->
@@ -21,13 +59,66 @@
                 <xs:element ref="Active"/>
                 <xs:element ref="Variations"/>
             </xs:choice>
-            <xs:attribute name="id" type="xs:integer"/>
-            <xs:attribute name="num" type="xs:integer"/>
+            <xs:attribute name="id" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Beim Import wird sie nicht
+                        ausgewertet, sie dient nur der Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="num" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="ProductExternId" type="ItemString"/>
-    <xs:element name="Active" type="ItemInteger"/>
+    <xs:element name="ProductExternId" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Parent Artikel zwischen ERP/PIM und brickfox.
+                Pflichtangabe, da der Artikel darüber zugeordnet wird.
+
+                Beispiel: &lt;ProductExternId&gt;7254356456&lt;/ProductExternId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Active" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Globale Artikelsteuerung in brickfox.
+                Nur Artikel mit Active = 1 sind verkaufbare Artikel.
+
+                Beispiel: &lt;Active&gt;1&lt;/Active&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Variations">
+        <xs:annotation>
+            <xs:documentation>
+                Produktvarianten, die aktualisiert werden sollen.
+
+                Beispiel:
+                &lt;Variations&gt;
+                  &lt;Variation&gt;
+                    &lt;VariationExternId&gt;7254346456&lt;/VariationExternId&gt;
+                    &lt;VariationActive&gt;1&lt;/VariationActive&gt;
+                    &lt;Available&gt;0&lt;/Available&gt;
+                    &lt;Stock&gt;110&lt;/Stock&gt;
+                    &lt;Currencies net="true"&gt;
+                      &lt;Currency code="EUR"&gt;
+                        &lt;Price&gt;17.7834&lt;/Price&gt;
+                      &lt;/Currency&gt;
+                    &lt;/Currencies&gt;
+                  &lt;/Variation&gt;
+                &lt;/Variations&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Variation" maxOccurs="unbounded"/>
@@ -35,6 +126,27 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Variation">
+        <xs:annotation>
+            <xs:documentation>
+                Einzelne Produktvariante mit Aktualisierungsdaten.
+
+                Hinweis: Bei Updates müssen nicht alle Felder angegeben werden, sondern nur die zu ändernden.
+                Die VariationExternId ist jedoch immer erforderlich zur Identifikation der Variante.
+
+                Beispiel:
+                &lt;Variation&gt;
+                  &lt;VariationExternId&gt;7254346456&lt;/VariationExternId&gt;
+                  &lt;VariationActive&gt;1&lt;/VariationActive&gt;
+                  &lt;Available&gt;0&lt;/Available&gt;
+                  &lt;Stock&gt;110&lt;/Stock&gt;
+                  &lt;Currencies net="true"&gt;
+                    &lt;Currency code="EUR"&gt;
+                      &lt;Price&gt;17.7834&lt;/Price&gt;
+                    &lt;/Currency&gt;
+                  &lt;/Currencies&gt;
+                &lt;/Variation&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="UID" minOccurs="0"/> <!-- only for exports, this field will be ignored on import -->
@@ -53,58 +165,178 @@
                 </xs:choice>
                 <xs:element ref="PrimeCost" minOccurs="0"/>
                 <xs:element ref="EprelRegistrationNumber" minOccurs="0"/>
-                <xs:element name="Descriptions" type="VariationDescriptions" minOccurs="0" />
+                <xs:element name="Descriptions" type="VariationDescriptions" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Beschreibungen der Variante, je Sprache ein Description-Knoten.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element ref="ContentQuantity" minOccurs="0" />
                 <xs:element ref="OrderQuantity" minOccurs="0" />
             </xs:choice>
         </xs:complexType>
     </xs:element>
     <xs:complexType name="VariationDescriptions">
+        <xs:annotation>
+            <xs:documentation>
+                Beschreibungen der Variante, je Sprache ein Description-Knoten.
+            </xs:documentation>
+        </xs:annotation>
         <xs:sequence>
-            <xs:element name="Description" type="VariationDescription" maxOccurs="unbounded"/>
+            <xs:element name="Description" type="VariationDescription" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Beschreibung der Variante in einer Sprache.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="VariationDescription">
+        <xs:annotation>
+            <xs:documentation>
+                Beschreibung der Variante in einer Sprache. Im Update stehen hier nur die Felder rund
+                um Grundpreis und Verpackung zur Verfügung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:choice maxOccurs="unbounded">
             <xs:element ref="ContentUnit" minOccurs="0"/>
             <xs:element ref="BasePriceQuantity" minOccurs="0"/>
             <xs:element ref="PackingUnit" minOccurs="0"/>
             <xs:element ref="OrderUnit" minOccurs="0"/>
         </xs:choice>
-        <xs:attribute name="lang" use="required" type="xs:string"/>
+        <xs:attribute name="lang" use="required" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    ISO-Sprachcode der Übersetzung, z.B. de oder en. Sprachen, die im Mandanten nicht
+                    angelegt sind, werden übersprungen.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:element name="NeverOutOfStock">
+        <xs:annotation>
+            <xs:documentation>
+                Kennzeichnet die Variante als dauerhaft verfügbar, unabhängig vom Bestand.
+                Mit location Attribut gilt die Angabe je Lager.
+
+                1 = dauerhaft verfügbar, 0 = Bestand maßgeblich.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="ItemInteger">
-                    <xs:attribute name="location" type="xs:string"/>
+                    <xs:attribute name="location" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Bezeichnung des Lagers. Welche Lager an einen Shop oder Marktplatz gemeldet werden,
+                                wird pro Kanal konfiguriert. Ohne Angabe gilt der Wert für das Standardlager.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
     <xs:element name="NeverOutOfStocks">
+        <xs:annotation>
+            <xs:documentation>
+                Dauerhafte Verfügbarkeit je Lager.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="NeverOutOfStock" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:element name="VariationExternId" type="ItemString"/>
-    <xs:element name="VariationActive" type="ItemInteger"/>
-    <xs:element name="Available" type="ItemInteger"/>
-    <xs:element name="DeliveryTime" type="ItemString"/>
-    <xs:element name="ThirdPartyStock" type="ItemInteger"/>
+    <xs:element name="VariationExternId" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Variante zwischen ERP/PIM und brickfox.
+                Pflichtangabe, da die Variante darüber zugeordnet wird.
+
+                Beispiel: &lt;VariationExternId&gt;7254346456&lt;/VariationExternId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VariationActive" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Aktivitätsstatus der Variante. 1 = aktiv, 0 = inaktiv.
+
+                Beispiel: &lt;VariationActive&gt;1&lt;/VariationActive&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Available" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Verfügbarkeitsstatus der Variante. 1 = verfügbar, 0 = nicht verfügbar.
+
+                Beispiel: &lt;Available&gt;0&lt;/Available&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="DeliveryTime" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Lieferzeit der Variante.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ThirdPartyStock" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Virtueller Bestand für Streckenartikel.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="Stock">
+        <xs:annotation>
+            <xs:documentation>
+                Bestandsinformationen mit optionalem Lagerort.
+
+                Wichtig: Negative Werte werden als 0 interpretiert.
+                Bei mehreren Lagerorten kann das location-Attribut verwendet werden.
+
+                Beispiele:
+                &lt;Stock&gt;110&lt;/Stock&gt;
+
+                Mit Lagerort:
+                &lt;Stock location="Stuttgart"&gt;8&lt;/Stock&gt;
+
+                Alternativ können mehrere Lagerorte über das Stocks-Element definiert werden:
+                &lt;Stocks&gt;
+                    &lt;Stock location="Stuttgart"&gt;8&lt;/Stock&gt;
+                    &lt;Stock location="Berlin"&gt;12&lt;/Stock&gt;
+                &lt;/Stocks&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="ItemInteger">
-                    <xs:attribute name="location" type="xs:string"/>
+                    <xs:attribute name="location" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Bezeichnung des Lagers. Welche Lager an einen Shop oder Marktplatz gemeldet werden,
+                                wird pro Kanal konfiguriert. Ohne Angabe gilt der Wert für das Standardlager.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
     <xs:element name="Stocks">
+        <xs:annotation>
+            <xs:documentation>
+                Bestände je Lager. Welche Lager an einen Shop oder Marktplatz gemeldet werden, wird
+                pro Kanal konfiguriert.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Stock" maxOccurs="unbounded"/>
@@ -112,14 +344,53 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Currencies">
+        <xs:annotation>
+            <xs:documentation>
+                Preise in verschiedenen Währungen. Brutto oder Netto möglich.
+
+                Beispiel:
+                &lt;Currencies net="true"&gt;
+                  &lt;Currency code="EUR"&gt;
+                    &lt;Price&gt;17.7834&lt;/Price&gt;
+                  &lt;/Currency&gt;
+                  &lt;Currency code="EUR-B2B"&gt;
+                    &lt;Price&gt;19.7834&lt;/Price&gt;
+                  &lt;/Currency&gt;
+                &lt;/Currencies&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="Currency"/>
             </xs:sequence>
-            <xs:attribute name="net" type="xs:boolean"/>
+            <xs:attribute name="net" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Preisangabe netto (true) oder brutto (false). Am Currencies-Knoten gilt die Angabe für
+                        alle enthaltenen Währungen, am Currency-Knoten nur für diese eine Währung.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Currency">
+        <xs:annotation>
+            <xs:documentation>
+                Währungsspezifische Preise.
+
+                Das code-Attribut definiert die Währung (z.B. "EUR", "USD") oder den Preistyp (z.B. "EUR-B2B").
+                Das net-Attribut gibt an, ob es sich um Netto- oder Bruttopreise handelt.
+
+                Beispiel:
+                &lt;Currency code="EUR"&gt;
+                &lt;Price&gt;17.7834&lt;/Price&gt;
+                &lt;Rrp&gt;21.99&lt;/Rrp&gt;
+                &lt;SpecialPrice&gt;15.99&lt;/SpecialPrice&gt;
+                &lt;SpecialPriceStart&gt;2022-01-03 00:00:00&lt;/SpecialPriceStart&gt;
+                &lt;SpecialPriceEnd&gt;2022-02-03 00:00:00&lt;/SpecialPriceEnd&gt;
+                &lt;/Currency&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="Price"/>
@@ -131,11 +402,30 @@
                     <xs:element ref="SpecialPriceEnd" minOccurs="0"/>
                 </xs:choice>
             </xs:sequence>
-            <xs:attribute name="code" use="required" type="xs:string"/>
-            <xs:attribute name="net" type="xs:boolean"/>
+            <xs:attribute name="code" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Eindeutiger Code des Attributs. Über diesen Code wird der Wert dem in brickfox
+                        angelegten Attribut zugeordnet; er muss über alle Lieferungen hinweg stabil bleiben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="net" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Preisangabe netto (true) oder brutto (false). Am Currencies-Knoten gilt die Angabe für
+                        alle enthaltenen Währungen, am Currency-Knoten nur für diese eine Währung.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="ScalePrices">
+        <xs:annotation>
+            <xs:documentation>
+                Staffelpreise der Währung, z.B. für Amazon B2B, Mercateo oder Shops.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="ScalePrice" maxOccurs="unbounded"/>
@@ -143,6 +433,11 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="ScalePrice">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Preisstaffel: Preis ab der in Quantity genannten Bestellmenge.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="Price" minOccurs="0"/>
@@ -150,18 +445,108 @@
             </xs:choice>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Price" type="ItemDecimal"/>
-    <xs:element name="Rrp" type="ItemString"/>
-    <xs:element name="SpecialPrice" type="ItemDecimal"/>
-    <xs:element name="SpecialPriceStart" type="ItemDateTime"/>
-    <xs:element name="SpecialPriceEnd" type="ItemDateTime"/>
-    <xs:element name="PriceGross" type="ItemDecimal"/>
-    <xs:element name="Quantity" type="ItemInteger"/>
-    <xs:element name="ContentUnit" type="ItemString"/>
-    <xs:element name="BasePriceQuantity" type="ItemString"/>
-    <xs:element name="PackingUnit" type="ItemString"/>
-    <xs:element name="ContentQuantity" type="ItemDecimal" />
-    <xs:element name="OrderQuantity" type="ItemDecimal" />
-    <xs:element name="OrderUnit" type="ItemString"/>
-    <xs:element name="EprelRegistrationNumber" type="ItemString"/>
+    <xs:element name="Price" type="ItemDecimal">
+        <xs:annotation>
+            <xs:documentation>
+                Verkaufspreis der Variante in dieser Währung.
+
+                Beispiel: &lt;Price&gt;17.7834&lt;/Price&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Rrp" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Unverbindliche Preisempfehlung (UVP).
+
+                Beispiel: &lt;Rrp&gt;21.69&lt;/Rrp&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SpecialPrice" type="ItemDecimal">
+        <xs:annotation>
+            <xs:documentation>
+                Sonder- bzw. Streichpreis der Variante.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SpecialPriceStart" type="ItemDateTime">
+        <xs:annotation>
+            <xs:documentation>
+                Beginn des Sonderpreises im Format JJJJ-MM-TT, wahlweise mit Uhrzeit.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="SpecialPriceEnd" type="ItemDateTime">
+        <xs:annotation>
+            <xs:documentation>
+                Ende des Sonderpreises im Format JJJJ-MM-TT, wahlweise mit Uhrzeit.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PriceGross" type="ItemDecimal">
+        <xs:annotation>
+            <xs:documentation>
+                Bruttopreis der Variante. Alternative zum Currencies-Knoten, wenn nur ein Preis ohne
+                Währungsangabe übergeben wird.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Quantity" type="ItemInteger">
+        <xs:annotation>
+            <xs:documentation>
+                Ab-Menge der Preisstaffel: Der Preis gilt ab dieser Bestellmenge.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ContentUnit" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Inhaltseinheit des Artikels, für grundpreispflichtige Artikel. Ergänzt
+                ContentQuantity.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="BasePriceQuantity" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Grundpreismenge, für grundpreispflichtige Artikel.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="PackingUnit" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Verpackungseinheit. Kann z.B. an Shopware übergeben werden.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ContentQuantity" type="ItemDecimal">
+        <xs:annotation>
+            <xs:documentation>
+                Inhalt bzw. Menge des Artikels, für grundpreispflichtige Artikel.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderQuantity" type="ItemDecimal">
+        <xs:annotation>
+            <xs:documentation>
+                Bestellmenge, in der der Artikel verkauft wird.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderUnit" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                Bestelleinheit, in der der Artikel verkauft wird.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="EprelRegistrationNumber" type="ItemString">
+        <xs:annotation>
+            <xs:documentation>
+                EPREL-Registriernummer der Variante aus der EU-Energielabel-Datenbank.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
 </xs:schema>

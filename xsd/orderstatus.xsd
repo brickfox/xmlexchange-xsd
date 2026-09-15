@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xs:element name="Orders">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für Statusänderungen von Bestellungen.
+                Das count Attribut gibt die Anzahl der enthaltenen Statusänderungen an.
+
+                Beispiel:
+                &lt;Orders count="1"&gt;
+                  &lt;Order num="1"&gt;...&lt;/Order&gt;
+                &lt;/Orders&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="Order"/>
             </xs:sequence>
-            <xs:attribute name="count" use="required" type="xs:integer"/>
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="Order">
+        <xs:annotation>
+            <xs:documentation>
+                Einzelne Statusänderung einer Bestellung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="OrderId"/>
@@ -26,44 +49,209 @@
                 <xs:element ref="OrderLines"/>
                 <xs:element ref="OrderFiles" minOccurs="0"/>
             </xs:sequence>
-            <xs:attribute name="num" use="required" type="xs:integer"/>
+            <xs:attribute name="num" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
-    <xs:element name="OrderId" type="xs:string"/>
-    <xs:element name="OrderStatusChanged" type="xs:string"/>
-    <xs:element name="OrderStatus" type="xs:string"/>
-    <xs:element name="OrderStatusComment" type="xs:string"/>
-    <xs:element name="ShippingTrackingId" type="xs:string"/>
-    <xs:element name="ShippingTrackingUrl" type="xs:anyURI"/>
-    <xs:element name="CarrierName" type="xs:string"/>
-    <xs:element name="ReturnTrackingId" type="xs:string"/>
-    <xs:element name="DeliveryBillId" type="xs:string"/>
+    <xs:element name="OrderId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Bestellungen zwischen ERP und brickfox.
+                Es ist dieselbe ID zu verwenden, die brickfox in der Orders.xml übergeben hat
+                (brickfox Mapping-ID).
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderStatusChanged" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Zeitpunkt der Statusänderung im Format YYYY-MM-DD HH:mm:ss
+
+                Beispiel: &lt;OrderStatusChanged&gt;2011-11-30 17:12:06&lt;/OrderStatusChanged&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderStatus" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Status der Bestellung. Der übergebene Wert wird über das Statusmatching des ERP-Kanals
+                auf einen brickfox-Status aufgelöst, die zulässigen Werte sind daher
+                konfigurationsabhängig.
+
+                Gängige brickfox-Statuscodes sind Pending, Shipped, PartlyShipped, Returned,
+                PartlyReturned und Cancelled.
+
+                Wird der Knoten OrderLines mitgeliefert, ergibt sich der Bestellstatus aus den
+                Positionsstatus; OrderStatus wirkt dann nur noch auf die Positionen.
+
+                Beispiel:
+                &lt;OrderStatus&gt;Shipped&lt;/OrderStatus&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderStatusComment" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Kommentar zum Status der Bestellung.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ShippingTrackingId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Sendungsverfolgungsnummer.
+                Bei mehreren Nummern kommagetrennt.
+
+                Beispiel: &lt;ShippingTrackingId&gt;01785006336538&lt;/ShippingTrackingId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ShippingTrackingUrl" type="xs:anyURI">
+        <xs:annotation>
+            <xs:documentation>
+                Komplette Tracking-URL der Sendung. Wird in der Regel nicht mehr benötigt, da die URL
+                aus dem Versanddienstleister und der ShippingTrackingId gebildet wird.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="CarrierName" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Name des Versenders.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ReturnTrackingId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Sendungsverfolgungsnummer für Retouren.
+                Wird bei Marktplätzen wie OTTO benötigt.
+                Das Retourenlabel kann auf dem Marktplatz generiert werden.
+
+                Beispiel: &lt;ReturnTrackingId&gt;11111111222222&lt;/ReturnTrackingId&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="DeliveryBillId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Lieferscheinnummer der Sendung.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="OrderAddInfos">
+        <xs:annotation>
+            <xs:documentation>
+                Zusatzinformationen zur Bestellung als Schlüssel-Wert-Paare.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderAddInfo"/>
             </xs:sequence>
-            <xs:attribute name="count" use="required" type="xs:integer"/>
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderAddInfo">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Zusatzinformation zur Bestellung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Key" type="xs:string"/>
-                <xs:element name="Value" type="xs:string"/>
+                <xs:element name="Key" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Bezeichnung der Zusatzinformation.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Value" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            In OrderFile der Pfad bzw. die Adresse der Datei, in den AddInfo-Knoten der Wert der
+                            Zusatzinformation.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:sequence>
-            <xs:attribute name="num" use="required" type="xs:integer"/>
+            <xs:attribute name="num" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLines">
+        <xs:annotation>
+            <xs:documentation>
+                Bestellpositionen mit Statusänderungen.
+
+                Beispiel für versendete Position:
+                &lt;OrderLine num="1"&gt;
+                  &lt;OrderLineId&gt;1&lt;/OrderLineId&gt;
+                  &lt;ProductId&gt;5433&lt;/ProductId&gt;
+                  &lt;VariationId&gt;5376&lt;/VariationId&gt;
+                  &lt;OrderLineStatus&gt;Shipped&lt;/OrderLineStatus&gt;
+                  &lt;QuantityOrdered&gt;1&lt;/QuantityOrdered&gt;
+                  &lt;QuantityCancelled&gt;0&lt;/QuantityCancelled&gt;
+                  &lt;QuantityShipped&gt;1&lt;/QuantityShipped&gt;
+                  &lt;QuantityReturned&gt;0&lt;/QuantityReturned&gt;
+                &lt;/OrderLine&gt;
+
+                Beispiel für retournierte Position:
+                &lt;OrderLine num="1"&gt;
+                  &lt;OrderLineId&gt;1&lt;/OrderLineId&gt;
+                  &lt;OrderLineStatus&gt;Returned&lt;/OrderLineStatus&gt;
+                  &lt;QuantityOrdered&gt;1&lt;/QuantityOrdered&gt;
+                  &lt;QuantityCancelled&gt;0&lt;/QuantityCancelled&gt;
+                  &lt;QuantityShipped&gt;1&lt;/QuantityShipped&gt;
+                  &lt;QuantityReturned&gt;1&lt;/QuantityReturned&gt;
+                &lt;/OrderLine&gt;
+
+                Hinweis: Bei Teilretouren/-stornierungen können die Mengen
+                von der ursprünglichen Bestellmenge abweichen.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderLine"/>
             </xs:sequence>
-            <xs:attribute name="count" use="required" type="xs:integer"/>
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLine">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Position der Bestellung mit ihrem Status und den gemeldeten Mengen.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="OrderLineId" minOccurs="0"/>
@@ -77,27 +265,104 @@
                 <xs:element ref="OrderShipments" minOccurs="0"/>
                 <xs:element ref="OrderLineAddInfos" minOccurs="0"/>
             </xs:sequence>
-            <xs:attribute name="num" use="required" type="xs:integer"/>
+            <xs:attribute name="num" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLineAddInfos">
+        <xs:annotation>
+            <xs:documentation>
+                Zusatzinformationen zur Bestellposition als Schlüssel-Wert-Paare.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderLineAddInfo"/>
             </xs:sequence>
-            <xs:attribute name="count" use="required" type="xs:integer"/>
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze. Reine Information: Der Wert wird nicht gegen die
+                        tatsächliche Anzahl geprüft, es kann also auch ein Näherungswert übergeben werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderLineAddInfo">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Zusatzinformation zur Bestellposition.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Key" type="xs:string"/>
-                <xs:element name="Value" type="xs:string"/>
+                <xs:element name="Key" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Bezeichnung der Zusatzinformation.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Value" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            In OrderFile der Pfad bzw. die Adresse der Datei, in den AddInfo-Knoten der Wert der
+                            Zusatzinformation.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:sequence>
-            <xs:attribute name="num" use="required" type="xs:integer"/>
+            <xs:attribute name="num" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei. Der Export vergibt sie
+                        fortlaufend ab 1. Beim Import wird sie nicht ausgewertet, sie dient nur der
+                        Lesbarkeit.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderFiles">
+        <xs:annotation>
+            <xs:documentation>
+                Dateien zur Bestellung (z.B. Rechnungen).
+
+                Beispiele für verschiedene Dateitypen:
+
+                1. Physikalische Datei:
+                &lt;OrderFile&gt;
+                  &lt;Type&gt;invoice_pdf&lt;/Type&gt;
+                  &lt;Value&gt;/incoming/invoice/111111111111.pdf&lt;/Value&gt;
+                  &lt;InvoiceNumber&gt;111111111111&lt;/InvoiceNumber&gt;
+                  &lt;ShippingTrackingIds&gt;
+                    &lt;ShippingTrackingId&gt;01785006336538&lt;/ShippingTrackingId&gt;
+                  &lt;/ShippingTrackingIds&gt;
+                &lt;/OrderFile&gt;
+
+                2. Externer Link:
+                &lt;OrderFile&gt;
+                  &lt;Type&gt;invoice_pdf&lt;/Type&gt;
+                  &lt;Value&gt;https://EXTERNEURL/111111111111.pdf&lt;/Value&gt;
+                  &lt;InvoiceNumber&gt;111111111111&lt;/InvoiceNumber&gt;
+                &lt;/OrderFile&gt;
+
+                3. FTP Download:
+                &lt;OrderFile&gt;
+                  &lt;Type&gt;invoice_pdf&lt;/Type&gt;
+                  &lt;Value&gt;sftp://EXTERNERHOST/PATH/111111111111.pdf&lt;/Value&gt;
+                  &lt;InvoiceNumber&gt;111111111111&lt;/InvoiceNumber&gt;
+                &lt;/OrderFile&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderFile"/>
@@ -105,30 +370,151 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderFile">
+        <xs:annotation>
+            <xs:documentation>
+                Eine Datei zur Bestellung, z.B. eine Rechnung.
+
+                Der Value-Knoten nimmt wahlweise einen Pfad im brickfox-Eingangsverzeichnis, eine
+                HTTP-Adresse oder eine sftp-Adresse auf.
+
+                Beispiele:
+                &lt;OrderFile&gt;
+                  &lt;Type&gt;invoice_pdf&lt;/Type&gt;
+                  &lt;Value&gt;/incoming/invoice/111111111111.pdf&lt;/Value&gt;
+                  &lt;InvoiceNumber&gt;111111111111&lt;/InvoiceNumber&gt;
+                &lt;/OrderFile&gt;
+
+                &lt;OrderFile&gt;
+                  &lt;Type&gt;invoice_pdf&lt;/Type&gt;
+                  &lt;Value&gt;https://EXTERNEURL/111111111111.pdf&lt;/Value&gt;
+                  &lt;InvoiceNumber&gt;111111111111&lt;/InvoiceNumber&gt;
+                &lt;/OrderFile&gt;
+
+                &lt;OrderFile&gt;
+                  &lt;Type&gt;invoice_pdf&lt;/Type&gt;
+                  &lt;Value&gt;sftp://EXTERNERHOST/PATH/111111111111.pdf&lt;/Value&gt;
+                  &lt;InvoiceNumber&gt;111111111111&lt;/InvoiceNumber&gt;
+                &lt;/OrderFile&gt;
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Type" type="xs:string"/>
-                <xs:element name="Value" type="xs:string"/>
-                <xs:element name="InvoiceNumber" type="xs:string" minOccurs="0"/>
+                <xs:element name="Type" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Art der Datei, z.B. invoice_pdf für eine Rechnung.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Value" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            In OrderFile der Pfad bzw. die Adresse der Datei, in den AddInfo-Knoten der Wert der
+                            Zusatzinformation.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="InvoiceNumber" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Rechnungsnummer zur Datei.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element name="ShippingTrackingIds" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Sendungsverfolgungsnummern, denen die Datei zugeordnet ist. Optional; ohne Angabe
+                            gilt die Datei für die gesamte Bestellung.
+                        </xs:documentation>
+                    </xs:annotation>
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="ShippingTrackingId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                            <xs:element name="ShippingTrackingId" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+                                <xs:annotation>
+                                    <xs:documentation>
+                                        Sendungsverfolgungsnummer, der die Datei zugeordnet wird. Für mehrere Sendungen
+                                        mehrere Knoten angeben.
+                                    </xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:element name="OrderLineId" type="xs:string"/>
-    <xs:element name="ProductId" type="xs:string"/>
-    <xs:element name="VariationId" type="xs:string"/>
-    <xs:element name="OrderLineStatus" type="xs:string"/>
-    <xs:element name="QuantityOrdered" type="xs:integer"/>
-    <xs:element name="QuantityCancelled" type="xs:integer"/>
-    <xs:element name="QuantityShipped" type="xs:integer"/>
-    <xs:element name="QuantityReturned" type="xs:integer"/>
+    <xs:element name="OrderLineId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Eindeutiges Kommunikationsmerkmal für Bestellpositionen zwischen ERP/PIM und brickfox.
+                Es ist dieselbe ID zu verwenden, die brickfox in der Orders.xml übergeben hat
+                (brickfox Mapping-ID).
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                ID des Produkts aus brickfox.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VariationId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                ID der Variante aus brickfox.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderLineStatus" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Status der Bestellposition. Der übergebene Wert wird über das Statusmatching des
+                ERP-Kanals aufgelöst, die zulässigen Werte sind daher konfigurationsabhängig.
+
+                Gängige brickfox-Statuscodes sind Pending, Shipped, Returned und Cancelled.
+
+                Beispiel:
+                &lt;OrderLineStatus&gt;Shipped&lt;/OrderLineStatus&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="QuantityOrdered" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Bestellte Menge. Muss der Menge aus der Orders.xml entsprechen.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="QuantityCancelled" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Stornierte Menge. Kann bei Teilstornierung von QuantityOrdered abweichen.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="QuantityShipped" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Versendete Menge. Kann bei Teilversand von QuantityOrdered abweichen.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="QuantityReturned" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Retournierte Menge. Kann bei Teilretoure von QuantityOrdered abweichen.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="OrderShipments">
+        <xs:annotation>
+            <xs:documentation>
+                Sendungen der Bestellung. Ermöglicht es, mehrere Teilsendungen mit je eigener
+                Sendungsverfolgung zu melden.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element minOccurs="0" maxOccurs="unbounded" ref="OrderShipment"/>
@@ -136,6 +522,11 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="OrderShipment">
+        <xs:annotation>
+            <xs:documentation>
+                Eine einzelne Sendung mit Versanddienstleister und Sendungsverfolgung.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="ShippingTrackingId"/>
