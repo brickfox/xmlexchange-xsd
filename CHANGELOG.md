@@ -9,6 +9,14 @@ a manual promote step moves `latest` onto `stable`. The authoritative per-change
 therefore the commit history of the channel branch together with [`VERSION`](VERSION);
 this file summarises what changed for readers.
 
+## Upcoming — arrives on `latest` with the next Core master deploy
+
+- New `stocks.xsd` (root element `Stocks`): stock export from brickfox to the ERP, one
+  record per variation and stock location, including Amazon FBA stock. Each record carries
+  the brickfox and external product/variation IDs, item number, EAN, the brickfox and
+  external stock location ID, quantity and last change. The export is off by default and is
+  enabled per ERP system by selecting stock locations. Existing schemas are unchanged.
+
 ## On `latest`, not yet promoted to `stable`
 
 ### Core `711a2c8d` (2026-08-10)

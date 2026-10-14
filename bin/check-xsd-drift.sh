@@ -31,7 +31,7 @@ fi
 SCHEMAS=(
   baseProducts products productsUpdate productDelete productsAssignments
   bundles shopProductUpdate articleNotDelete
-  categories brands manufacturers orders orderstatus
+  categories brands manufacturers orders orderstatus stocks
 )
 
 drift=0

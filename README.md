@@ -67,6 +67,7 @@ available alongside them.
 | `manufacturers.xsd`       | `Manufacturers`     | Manufacturer import                                            |
 | `orders.xsd`              | `Orders`            | Order export                                                   |
 | `orderstatus.xsd`         | `Orders`            | Order status exchange                                          |
+| `stocks.xsd`              | `Stocks`            | Stock export per variation and stock location                  |
 
 > Import/export direction and the exact interface paths are documented authoritatively in
 > Confluence — see below. If this table and Confluence disagree, Confluence wins until this
