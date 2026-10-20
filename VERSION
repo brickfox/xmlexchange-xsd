@@ -1,5 +1,5 @@
 source-repo:   git.brickfox.net/brickfox/core
 source-path:    BFcore/brick/modules/XmlExchange/xsd/
-source-commit:  535421c0bbaf9b40baf2e8053dc7ca02deb094c2
+source-commit:  4850b1b4ccdc753495758547fedde7b83f4a9fa6
 source-ref:     master
-published-at:   2026-09-15T09:16:45+02:00
+published-at:   2026-10-20T10:19:02+02:00

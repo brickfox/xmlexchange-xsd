@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="Stocks">
+        <xs:annotation>
+            <xs:documentation>
+                Root Element für den Bestands-Export (Stocks.xml) von brickfox an das ERP.
+                Exportiert werden die Bestände der in der XmlExchange-Konfiguration gewählten Lagerorte,
+                z. B. die von Amazon abgerufenen FBA-Bestände. Jeder Datensatz beschreibt den Bestand
+                genau einer Variante in genau einem Lagerort.
+
+                Ohne fullExport enthält die Datei nur Bestände, die sich seit dem letzten erfolgreichen
+                Export geändert haben. Der erste Export nach der Aktivierung ist immer vollständig. Wird die
+                Lagerauswahl später erweitert, ist einmal ein Export mit fullExport=1 nötig, damit auch die
+                unveränderten Bestände der neuen Lagerorte übertragen werden. Gilt ein Delta-Export oder der
+                erste Export als nicht zugestellt oder scheitert ein einzelner Datensatz, enthält der nächste
+                Lauf dieselben Änderungen erneut. Ein von Hand angestoßener Export mit fullExport=1 wird
+                dagegen nicht automatisch wiederholt und ist bei einem Fehler erneut anzustoßen.
+
+                Beispiel:
+                &lt;Stocks count="1"&gt;
+                  &lt;Stock num="1"&gt;
+                    &lt;ProductUID&gt;1001&lt;/ProductUID&gt;
+                    &lt;ProductExternId&gt;P-1001&lt;/ProductExternId&gt;
+                    &lt;VariationUID&gt;2001&lt;/VariationUID&gt;
+                    &lt;VariationExternId&gt;V-2001&lt;/VariationExternId&gt;
+                    &lt;VariationItemNumber&gt;ART-2001-RED&lt;/VariationItemNumber&gt;
+                    &lt;EAN&gt;4006381333931&lt;/EAN&gt;
+                    &lt;StockLocationId&gt;3&lt;/StockLocationId&gt;
+                    &lt;StockLocationExternId&gt;FBA-DE&lt;/StockLocationExternId&gt;
+                    &lt;Quantity&gt;17&lt;/Quantity&gt;
+                    &lt;LastUpdate&gt;2026-10-14 09:30:00&lt;/LastUpdate&gt;
+                  &lt;/Stock&gt;
+                &lt;/Stocks&gt;
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Stock"/>
+            </xs:sequence>
+            <xs:attribute name="count" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Anzahl der enthaltenen Datensätze.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Stock">
+        <xs:annotation>
+            <xs:documentation>
+                Bestand einer Variante in einem Lagerort.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ProductUID"/>
+                <xs:element ref="ProductExternId" minOccurs="0"/>
+                <xs:element ref="VariationUID"/>
+                <xs:element ref="VariationExternId" minOccurs="0"/>
+                <xs:element ref="VariationItemNumber" minOccurs="0"/>
+                <xs:element ref="EAN" minOccurs="0"/>
+                <xs:element ref="StockLocationId"/>
+                <xs:element ref="StockLocationExternId" minOccurs="0"/>
+                <xs:element ref="Quantity"/>
+                <xs:element ref="LastUpdate"/>
+            </xs:sequence>
+            <xs:attribute name="num" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Laufende Nummer des Datensatzes innerhalb der Datei, fortlaufend ab 1.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ProductUID" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                brickfox-ID des Produkts.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="ProductExternId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Externe ID des Produkts (ProductId aus dem Produktimport). Leer, wenn keine externe ID gepflegt ist.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VariationUID" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                brickfox-ID der Variante.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VariationExternId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Externe ID der Variante (VariationId aus dem Produktimport). Leer, wenn keine externe ID gepflegt ist.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="VariationItemNumber" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Artikelnummer der Variante.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="EAN" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                EAN der Variante.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="StockLocationId" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                brickfox-ID des Lagerorts.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="StockLocationExternId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Externe ID des Lagerorts. Sie entspricht dem Attribut location von Stocks/Stock beim
+                Bestandsimport. Leer, wenn am Lagerort keine externe ID gepflegt ist.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="Quantity" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation>
+                Bestand der Variante in diesem Lagerort. Bei FBA-Lagerorten ist das die von Amazon als
+                verkaufsfähig gemeldete Menge.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="LastUpdate" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Zeitpunkt der letzten Bestandsänderung in brickfox im Format YYYY-MM-DD HH:mm:ss.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+</xs:schema>
