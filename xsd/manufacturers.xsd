@@ -118,7 +118,8 @@
                 - GPSR (General Product Safety Regulation)
                 - FBO (Food Business Operator)
 
-                Ohne Angabe wird GPSR angenommen.
+                Ohne Angabe behält ein bestehender Hersteller seinen Typ, ein neuer wird als GPSR
+                angelegt. Ein leeres Element setzt den Typ auf GPSR zurück.
             </xs:documentation>
         </xs:annotation>
     </xs:element>
