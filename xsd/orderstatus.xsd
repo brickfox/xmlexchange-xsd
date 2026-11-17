@@ -30,13 +30,25 @@
         <xs:annotation>
             <xs:documentation>
                 Einzelne Statusänderung einer Bestellung.
+
+                Eine reine Zahlungsmeldung enthält nur OrderId, OrderStatusChanged und
+                OrderPaymentStatus. Ohne OrderStatus und ohne Positionen bleiben Bestellstatus,
+                Positionen und Sendungen unverändert.
+
+                Beispiel für eine reine Zahlungsmeldung:
+                &lt;Order num="1"&gt;
+                  &lt;OrderId&gt;1234&lt;/OrderId&gt;
+                  &lt;OrderStatusChanged&gt;2026-11-10 09:00:00&lt;/OrderStatusChanged&gt;
+                  &lt;OrderPaymentStatus&gt;paid&lt;/OrderPaymentStatus&gt;
+                &lt;/Order&gt;
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="OrderId"/>
                 <xs:element ref="OrderStatusChanged"/>
-                <xs:element ref="OrderStatus"/>
+                <xs:element ref="OrderStatus" minOccurs="0"/>
+                <xs:element ref="OrderPaymentStatus" minOccurs="0"/>
                 <xs:element ref="OrderAddInfos" minOccurs="0"/>
                 <xs:element ref="OrderStatusComment" minOccurs="0"/>
                 <xs:sequence minOccurs="0">
@@ -46,7 +58,7 @@
                     <xs:element ref="CarrierName"/>
                     <xs:element minOccurs="0" ref="DeliveryBillId"/>
                 </xs:sequence>
-                <xs:element ref="OrderLines"/>
+                <xs:element ref="OrderLines" minOccurs="0"/>
                 <xs:element ref="OrderFiles" minOccurs="0"/>
             </xs:sequence>
             <xs:attribute name="num" use="required" type="xs:integer">
@@ -91,8 +103,31 @@
                 Wird der Knoten OrderLines mitgeliefert, ergibt sich der Bestellstatus aus den
                 Positionsstatus; OrderStatus wirkt dann nur noch auf die Positionen.
 
+                Optional: Fehlen OrderStatus und Positionen (reine Zahlungsmeldung), bleibt der
+                Bestellstatus unverändert.
+
                 Beispiel:
                 &lt;OrderStatus&gt;Shipped&lt;/OrderStatus&gt;
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="OrderPaymentStatus" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>
+                Zahlungsstatus der Bestellung, z. B. nach dem Zahlungseingang bei Rechnung oder
+                Vorkasse. Erwartet wird ein brickfox-Zahlstatus-Code:
+
+                paid       - bezahlt
+                partlyPaid - teilweise bezahlt
+                notPaid    - nicht bezahlt
+                refunded   - erstattet
+
+                Ein unbekannter Code wird protokolliert und ignoriert, die übrigen Angaben der
+                Bestellung werden trotzdem verarbeitet. Ohne den Knoten bleibt der Zahlungsstatus
+                unverändert.
+
+                Beispiel:
+                &lt;OrderPaymentStatus&gt;paid&lt;/OrderPaymentStatus&gt;
             </xs:documentation>
         </xs:annotation>
     </xs:element>
@@ -204,7 +239,8 @@
     <xs:element name="OrderLines">
         <xs:annotation>
             <xs:documentation>
-                Bestellpositionen mit Statusänderungen.
+                Bestellpositionen mit Statusänderungen. Optional, z. B. für eine reine
+                Zahlungsmeldung.
 
                 Beispiel für versendete Position:
                 &lt;OrderLine num="1"&gt;
